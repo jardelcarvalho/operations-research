@@ -9,4 +9,10 @@ if __name__ == '__main__':
         sink_col='Sink',
         weight_col='Weight')
 
-    print(graph.graph)
+    print(graph)
+    print()
+    print(graph[0, 3])
+    print(graph.nodes)
+    print(graph.neighborhoods(1))
+    print(graph.neighborhoods(4))
+    print(graph.degree(1))
