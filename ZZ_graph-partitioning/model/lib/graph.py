@@ -10,11 +10,13 @@ class _Graph:
         self.__indices_nodes = {i: n for i, n in enumerate(nodes)}
         self.__graph = np.zeros((len(nodes), len(nodes)), dtype=np.float64)
         self.__set_weights(edges, weights)
-
-        self.edges = np.concatenate([edges, weights[..., np.newaxis]], axis=-1)
+        
+        self.__edges = edges
+        self.__edges_weights = np.concatenate([edges, weights[..., np.newaxis]], axis=-1)
 
     def __getitem__(self, i):
-        return self.__graph[i]
+        source, sink = i
+        return self.__graph[self.__nodes_indices[source], self.__nodes_indices[sink]]
 
     def __str__(self):
         return str(self.__graph)
@@ -25,6 +27,14 @@ class _Graph:
     @property
     def nodes(self):
         return list(self.__nodes_indices.keys())
+
+    @property
+    def edges(self):
+        return self.__edges
+
+    @property
+    def edges_weights(self):
+        return self.__edges_weights
 
     def __set_weights(self, edges, weights):
         for (source, sink), weight in zip(edges, weights):
