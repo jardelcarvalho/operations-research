@@ -1,3 +1,6 @@
+import pyomo.environ as pyo
+import numpy as np
+
 #region model constants
 phi = None
 K = None
@@ -69,27 +72,58 @@ def _set_model_functions(graph, _):
     omega = func_omega
 #endregion model functions
 
+#region model variables
+def rho(i, pi):
+    return _model.rho[rho_index(i, pi)]
+
+def epsilon(i, j):
+    return _model.epsilon[epsilon_index(i, j)]
+
+def s(sign):
+    return _model.s[s_index(sign)]
+#endregion model variables
+
 #region variable indexation
-...
+def rho_index(i, pi):
+    return f'{i}_{pi}'
+
+def epsilon_index(i, j):
+    return f'{i}_{j}'
+
+def s_index(sign):
+    return f'{sign}'
 #endregion variable indexation
 
 #region model creation
 _model = None
 
 def _set_variables():
-    pass
+    _model.rho = pyo.Var(list(map(lambda t: rho_index(*t), cart([V, Pi]))), within=pyo.Binary)
+    _model.epsilon = pyo.Var(list(map(lambda t: epsilon_index(*t), E)), within=pyo.Binary)
+    _model.s = pyo.Var(list(map(s_index, ['neg', 'pos'])), within=pyo.PositiveReals)
 
 def _set_objective():
-    pass
+    z = sum(map(lambda idx: omega(*idx) * epsilon(*idx), E)) + (K - s('neg') - s('pos')) * phi
+    _model.z = pyo.Objective(expr=z, sense=pyo.minimize)
 
 def _set_constraint1():
-    pass
+    def lhs(i):
+        return sum(map(lambda pi: rho(i, pi), Pi))
+    _model.vertex_represents_unique_partition = pyo.Constraint(V, rule=lambda _, i: lhs(i) <= 1)
 
 def _set_constraint2():
-    pass
+    def lhs(pi):
+        return sum(map(lambda i: rho(i, pi), V))
+    _model.partition_has_unique_representant = pyo.Constraint(Pi, rule=lambda _, pi: lhs(pi) <= 1)
 
 def _set_constraint3():
-    pass
+    VxPi = cart([V, Pi])
+
+    def lhs(idx):
+        i, pi = VxPi[idx]
+        return sum(map(lambda j: rho(j, pi), range(1, i)))
+
+    _model.min_index_representant = pyo.Constraint(list(range(len(VxPi))), lambda _, idx: lhs(idx) == 0)
 
 def _set_constraint4():
     pass
@@ -103,17 +137,23 @@ def _set_constraint6():
 def _create_model():
     global _model
 
+    _model = pyo.ConcreteModel()
+
     _set_variables()
     _set_objective()
-    _set_constraint1()
-    _set_constraint2()
+    # _set_constraint1()
+    # _set_constraint2()
     _set_constraint3()
-    _set_constraint4()
-    _set_constraint5()
-    _set_constraint6()
+    # _set_constraint4()
+    # _set_constraint5()
+    # _set_constraint6()
+
+    _model.write('lp.lp', io_options={'symbolic_solver_labels': True})
 #endregion model creation
 
 def initialize(graph, K, lp_file_path=None):
+    global _model
+
     _set_model_constants(graph, K)
     _set_model_sets(graph, K)
     _set_model_functions(graph, K)
