@@ -79,8 +79,8 @@ def rho(i, pi):
 def epsilon(i, j):
     return _model.epsilon[epsilon_index(i, j)]
 
-def s(sign):
-    return _model.s[s_index(sign)]
+def kappa(sign):
+    return _model.kappa[kappa_index(sign)]
 #endregion model variables
 
 #region variable indexation
@@ -90,7 +90,7 @@ def rho_index(i, pi):
 def epsilon_index(i, j):
     return f'{i}_{j}'
 
-def s_index(sign):
+def kappa_index(sign):
     return f'{sign}'
 #endregion variable indexation
 
@@ -100,10 +100,10 @@ _model = None
 def _set_variables():
     _model.rho = pyo.Var(list(map(lambda t: rho_index(*t), cart([V, Pi]))), within=pyo.Binary)
     _model.epsilon = pyo.Var(list(map(lambda t: epsilon_index(*t), E)), within=pyo.Binary)
-    _model.s = pyo.Var(list(map(s_index, ['neg', 'pos'])), within=pyo.PositiveReals)
+    _model.kappa = pyo.Var(list(map(kappa_index, ['neg', 'pos'])), within=pyo.PositiveReals)
 
 def _set_objective():
-    z = sum(map(lambda idx: omega(*idx) * epsilon(*idx), E)) + (K - s('neg') - s('pos')) * phi
+    z = sum(map(lambda idx: omega(*idx) * epsilon(*idx), E)) + (K - kappa('neg') - kappa('pos')) * phi
     _model.z = pyo.Objective(expr=z, sense=pyo.minimize)
 
 def _set_constraint1():
@@ -117,16 +117,19 @@ def _set_constraint2():
     _model.partition_has_unique_representant = pyo.Constraint(Pi, rule=lambda _, pi: lhs(pi) <= 1)
 
 def _set_constraint3():
-    VxPi = cart([V, Pi])
+    def lhs():
+        res = 0
+        for pi in Pi:
+            for i in V:
+                res += rho(i, pi)
+        return res
 
-    def lhs(idx):
-        i, pi = VxPi[idx]
-        return sum(map(lambda j: rho(j, pi), range(1, i)))
-
-    _model.min_index_representant = pyo.Constraint(list(range(len(VxPi))), lambda _, idx: lhs(idx) == 0)
+    _model.relaxation_total_components = pyo.Constraint(
+        rule=lambda _: lhs() + kappa('neg') - kappa('pos') == 0)
 
 def _set_constraint4():
-    pass
+    _model.max_kappa = pyo.Constraint(
+        rule=lambda _: kappa('neg') + kappa('pos') <= K)
 
 def _set_constraint5():
     pass

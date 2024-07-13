@@ -8,26 +8,25 @@ z:
 +1 epsilon(2_3)
 +2.0 epsilon(1_4)
 +1 epsilon(4_5)
--6.0 s(neg)
--6.0 s(pos)
+-6.0 kappa(neg)
+-6.0 kappa(pos)
 
 s.t.
 
-c_u_partition_has_unique_representant(0)_:
+c_e_relaxation_total_components_:
++1 kappa(neg)
+-1 kappa(pos)
 +1 rho(1_0)
-+1 rho(2_0)
-+1 rho(3_0)
-+1 rho(4_0)
-+1 rho(5_0)
-<= 1
-
-c_u_partition_has_unique_representant(1)_:
 +1 rho(1_1)
++1 rho(2_0)
 +1 rho(2_1)
++1 rho(3_0)
 +1 rho(3_1)
++1 rho(4_0)
 +1 rho(4_1)
++1 rho(5_0)
 +1 rho(5_1)
-<= 1
+= 0
 
 bounds
    1 <= ONE_VAR_CONSTANT <= 1
@@ -36,8 +35,8 @@ bounds
    0 <= epsilon(2_3) <= 1
    0 <= epsilon(1_4) <= 1
    0 <= epsilon(4_5) <= 1
-   0 <= s(neg) <= +inf
-   0 <= s(pos) <= +inf
+   0 <= kappa(neg) <= +inf
+   0 <= kappa(pos) <= +inf
    0 <= rho(1_0) <= 1
    0 <= rho(1_1) <= 1
    0 <= rho(2_0) <= 1
