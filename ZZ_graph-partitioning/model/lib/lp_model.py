@@ -132,9 +132,15 @@ def _set_constraint4():
         rule=lambda _: kappa('neg') + kappa('pos') <= K)
 
 def _set_constraint5():
+    #TODO: é aqui que será necessário realizar a linearização
+    # _model.representants_and_non_representants_relationship = pyo.Constraint(V, )
     pass
 
 def _set_constraint6():
+    #TODO: criar função de interseção
+    # def lhs(idx):
+    #     i, j = E[idx]
+    #     (len(n(i)) + len(n(j))) * (1 - epsilon(i, j))
     pass
 
 def _create_model():
