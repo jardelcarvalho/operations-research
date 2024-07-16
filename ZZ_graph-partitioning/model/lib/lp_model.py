@@ -2,10 +2,10 @@ import pyomo.environ as pyo
 import numpy as np
 
 #region model constants
-phi = None
+lamb = None
 K = None
 
-def _compute_phi(graph):
+def _compute_lamb(graph):
     r = 0
     for n in graph.nodes:
         for neighborhood in graph.neighborhoods(n):
@@ -13,11 +13,11 @@ def _compute_phi(graph):
     return r
 
 def _set_model_constants(graph, _K):
-    global phi
+    global lamb
     global K
 
     K = _K
-    phi = _compute_phi(graph)
+    lamb = _compute_lamb(graph)
 #endregion model constants
 
 #region model sets
@@ -81,6 +81,9 @@ def epsilon(i, j):
 
 def kappa(sign):
     return _model.kappa[kappa_index(sign)]
+
+def xi(i, j, pi):
+    return _model.xi[xi_index(i, j, pi)]
 #endregion model variables
 
 #region variable indexation
@@ -92,18 +95,45 @@ def epsilon_index(i, j):
 
 def kappa_index(sign):
     return f'{sign}'
+
+def xi_index(i, j, pi):
+    return f'{i}_{j}_{pi}'
 #endregion variable indexation
 
 #region model creation
 _model = None
 
+def _set_linearization_variables():
+    xi_indices = []
+    for i in V:
+        xi_indices.extend(cart([[i], n(i), Pi], ravel=True))
+
+    _model.xi = pyo.Var(list(map(lambda t: xi_index(*t), xi_indices)), within=pyo.Binary)
+
+    def get_constraints(idx, c):
+        i, j, pi = xi_indices[idx]
+        if c == 'c1':
+            return xi(i, j, pi) <= epsilon(i, j)
+        elif c == 'c2':
+            return xi(i, j, pi) <= rho(i, pi)
+        else:
+            return xi(i, j, pi) >= epsilon(i, j) + rho(i, pi) - 1
+
+    _model.xi_linearization_constraint1 = pyo.Constraint(
+        list(range(len(xi_indices))), rule=lambda _, idx: get_constraints(idx, 'c1'))
+    _model.xi_linearization_constraint2 = pyo.Constraint(
+        list(range(len(xi_indices))), rule=lambda _, idx: get_constraints(idx, 'c2'))
+    _model.xi_linearization_constraint3 = pyo.Constraint(
+        list(range(len(xi_indices))), rule=lambda _, idx: get_constraints(idx, 'c3'))
+
 def _set_variables():
     _model.rho = pyo.Var(list(map(lambda t: rho_index(*t), cart([V, Pi]))), within=pyo.Binary)
     _model.epsilon = pyo.Var(list(map(lambda t: epsilon_index(*t), E)), within=pyo.Binary)
     _model.kappa = pyo.Var(list(map(kappa_index, ['neg', 'pos'])), within=pyo.PositiveReals)
+    _set_linearization_variables()
 
 def _set_objective():
-    z = sum(map(lambda idx: omega(*idx) * epsilon(*idx), E)) + (K - kappa('neg') - kappa('pos')) * phi
+    z = sum(map(lambda idx: omega(*idx) * epsilon(*idx), E)) + (K - kappa('neg') - kappa('pos')) * lamb
     _model.z = pyo.Objective(expr=z, sense=pyo.minimize)
 
 def _set_constraint1():
@@ -152,7 +182,7 @@ def _create_model():
     _set_objective()
     # _set_constraint1()
     # _set_constraint2()
-    _set_constraint3()
+    # _set_constraint3()
     # _set_constraint4()
     # _set_constraint5()
     # _set_constraint6()
