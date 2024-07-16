@@ -58,6 +58,19 @@ def cart(sets, ravel=False):
         res = new
     return res
 
+def intersection(sets):
+    res = set()
+    minor_set, _ = min(list(map(lambda s: (s, len(s)), sets)), key=lambda t: t[1])
+    for e in minor_set:
+        intersects_all = True
+        for other_set in sets:
+            if e not in other_set:
+                intersects_all = False
+                break
+        if intersects_all:
+            res.add(e)
+    return list(res)
+
 def _set_model_functions(graph, _):
     global n
     global omega
