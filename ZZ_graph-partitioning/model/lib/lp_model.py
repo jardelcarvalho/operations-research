@@ -214,11 +214,11 @@ def _create_model():
 
     _set_variables()
     _set_objective()
-    # _set_constraint1()
-    # _set_constraint2()
-    # _set_constraint3()
-    # _set_constraint4()
-    # _set_constraint5()
+    _set_constraint1()
+    _set_constraint2()
+    _set_constraint3()
+    _set_constraint4()
+    _set_constraint5()
     _set_constraint6()
 
     _model.write('lp.lp', io_options={'symbolic_solver_labels': True})

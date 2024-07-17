@@ -173,6 +173,102 @@ c_u_xi_linearization_constraint3(9)_:
 +1 rho(4_1)
 <= 1
 
+c_u_vertex_represents_unique_partition(1)_:
++1 rho(1_0)
++1 rho(1_1)
+<= 1
+
+c_u_vertex_represents_unique_partition(2)_:
++1 rho(2_0)
++1 rho(2_1)
+<= 1
+
+c_u_vertex_represents_unique_partition(3)_:
++1 rho(3_0)
++1 rho(3_1)
+<= 1
+
+c_u_vertex_represents_unique_partition(4)_:
++1 rho(4_0)
++1 rho(4_1)
+<= 1
+
+c_u_vertex_represents_unique_partition(5)_:
++1 rho(5_0)
++1 rho(5_1)
+<= 1
+
+c_u_partition_has_unique_representant(0)_:
++1 rho(1_0)
++1 rho(2_0)
++1 rho(3_0)
++1 rho(4_0)
++1 rho(5_0)
+<= 1
+
+c_u_partition_has_unique_representant(1)_:
++1 rho(1_1)
++1 rho(2_1)
++1 rho(3_1)
++1 rho(4_1)
++1 rho(5_1)
+<= 1
+
+c_e_relaxation_total_components_:
++1 kappa(neg)
+-1 kappa(pos)
++1 rho(1_0)
++1 rho(1_1)
++1 rho(2_0)
++1 rho(2_1)
++1 rho(3_0)
++1 rho(3_1)
++1 rho(4_0)
++1 rho(4_1)
++1 rho(5_0)
++1 rho(5_1)
+= 0
+
+c_u_max_kappa_:
++1 kappa(neg)
++1 kappa(pos)
+<= 2
+
+c_e_representants_and_non_representants_relationship(1)_:
++1 xi(1_2_0)
++1 xi(1_2_1)
++1 xi(1_3_0)
++1 xi(1_3_1)
++1 xi(1_4_0)
++1 xi(1_4_1)
++1 rho(1_0)
++1 rho(1_1)
+= 1
+
+c_e_representants_and_non_representants_relationship(2)_:
++1 xi(2_3_0)
++1 xi(2_3_1)
++1 rho(2_0)
++1 rho(2_1)
+= 1
+
+c_e_representants_and_non_representants_relationship(3)_:
+-1 rho(3_0)
+-1 rho(3_1)
+= -1
+
+c_e_representants_and_non_representants_relationship(4)_:
++1 xi(4_5_0)
++1 xi(4_5_1)
++1 rho(4_0)
++1 rho(4_1)
+= 1
+
+c_e_representants_and_non_representants_relationship(5)_:
+-1 rho(5_0)
+-1 rho(5_1)
+= -1
+
 c_u_strongly_connected_components(0)_:
 +4 epsilon(1_3)
 +1 epsilon(1_2)
@@ -222,8 +318,12 @@ bounds
    0 <= rho(1_1) <= 1
    0 <= rho(2_0) <= 1
    0 <= rho(2_1) <= 1
+   0 <= rho(3_0) <= 1
+   0 <= rho(3_1) <= 1
    0 <= rho(4_0) <= 1
    0 <= rho(4_1) <= 1
+   0 <= rho(5_0) <= 1
+   0 <= rho(5_1) <= 1
 binary
   epsilon(1_3)
   epsilon(1_2)
@@ -244,6 +344,10 @@ binary
   rho(1_1)
   rho(2_0)
   rho(2_1)
+  rho(3_0)
+  rho(3_1)
   rho(4_0)
   rho(4_1)
+  rho(5_0)
+  rho(5_1)
 end
