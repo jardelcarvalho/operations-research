@@ -175,9 +175,13 @@ def _set_constraint4():
         rule=lambda _: kappa('neg') + kappa('pos') <= K)
 
 def _set_constraint5():
-    #TODO: é aqui que será necessário realizar a linearização
-    # _model.representants_and_non_representants_relationship = pyo.Constraint(V, )
-    pass
+    def lhs(i):
+        return 1 - sum(rho(i, pi) for pi in Pi)
+    
+    def rhs(i):
+        return sum(xi(*arg) for arg in cart([[i], n(i), Pi], ravel=True))
+    
+    _model.representants_and_non_representants_relationship = pyo.Constraint(V, rule=lambda _, i: lhs(i) == rhs(i))
 
 def _set_constraint6():
     #TODO: criar função de interseção
@@ -197,7 +201,7 @@ def _create_model():
     # _set_constraint2()
     # _set_constraint3()
     # _set_constraint4()
-    # _set_constraint5()
+    _set_constraint5()
     # _set_constraint6()
 
     _model.write('lp.lp', io_options={'symbolic_solver_labels': True})
