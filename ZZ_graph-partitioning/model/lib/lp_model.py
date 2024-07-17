@@ -184,11 +184,28 @@ def _set_constraint5():
     _model.representants_and_non_representants_relationship = pyo.Constraint(V, rule=lambda _, i: lhs(i) == rhs(i))
 
 def _set_constraint6():
-    #TODO: criar função de interseção
-    # def lhs(idx):
-    #     i, j = E[idx]
-    #     (len(n(i)) + len(n(j))) * (1 - epsilon(i, j))
-    pass
+    def lhs(idx):
+        i, j = E[idx]
+        res = (len(n(i)) + len(n(j))) * (1 - epsilon(i, j))
+        for k in intersection([n(i), n(j)]):
+            res += epsilon(i, k) + epsilon(j, k)
+        return res
+    
+    def rhs(idx):
+        i, j = E[idx]
+
+        res = 0
+        for k in n(i):
+            res += epsilon(i, k)
+        
+        for k in n(j):
+            res += epsilon(j, k)
+
+        res -= 2
+        return res
+
+    indices = range(len(E))
+    _model.strongly_connected_components = pyo.Constraint(indices, rule=lambda _, idx: lhs(idx) >= rhs(idx))
 
 def _create_model():
     global _model
@@ -201,8 +218,8 @@ def _create_model():
     # _set_constraint2()
     # _set_constraint3()
     # _set_constraint4()
-    _set_constraint5()
-    # _set_constraint6()
+    # _set_constraint5()
+    _set_constraint6()
 
     _model.write('lp.lp', io_options={'symbolic_solver_labels': True})
 #endregion model creation
