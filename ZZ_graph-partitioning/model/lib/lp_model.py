@@ -242,4 +242,9 @@ def initialize(graph, K, lp_file_path=None):
     _create_model()
 
 def run():
-    pass
+    solver = pyo.SolverFactory('cbc', executable='../../solvers/Cbc/bin/cbc.exe')
+    solver.options['LogFile'] = 'log.log'
+
+    status = solver.solve(_model, options={"threads": 8})
+
+    print(status)

@@ -20,3 +20,4 @@ if __name__ == '__main__':
     # print(graph.neighborhoods(1))
     # print(graph.neighborhoods(4))
     # print(graph.degree(1))
+    lp_model.run()
