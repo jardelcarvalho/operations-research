@@ -247,4 +247,7 @@ def run():
 
     status = solver.solve(_model, options={"threads": 8})
 
+    for i, j in E:
+        print(i, j, epsilon(i, j)())
+
     print(status)
