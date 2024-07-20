@@ -128,9 +128,9 @@ def _set_linearization_variables():
         if c == 'c1':
             return xi(i, j, pi) <= epsilon(i, j)
         elif c == 'c2':
-            return xi(i, j, pi) <= rho(i, pi)
+            return xi(i, j, pi) <= rho(j, pi)
         else:
-            return xi(i, j, pi) >= epsilon(i, j) + rho(i, pi) - 1
+            return xi(i, j, pi) >= epsilon(i, j) + rho(j, pi) - 1
 
     _model.xi_linearization_constraint1 = pyo.Constraint(
         list(range(len(xi_indices))), rule=lambda _, idx: get_constraints(idx, 'c1'))
@@ -218,7 +218,7 @@ def _create_model():
     _set_constraint2()
     _set_constraint3()
     _set_constraint4()
-    # _set_constraint5()
+    _set_constraint5()
     _set_constraint6()
 
     _model.write('lp.lp', io_options={'symbolic_solver_labels': True})

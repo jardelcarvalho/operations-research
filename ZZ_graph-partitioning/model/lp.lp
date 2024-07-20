@@ -65,112 +65,112 @@ c_u_xi_linearization_constraint1(9)_:
 
 c_u_xi_linearization_constraint2(0)_:
 +1 xi(1_2_0)
--1 rho(1_0)
+-1 rho(2_0)
 <= 0
 
 c_u_xi_linearization_constraint2(1)_:
 +1 xi(1_2_1)
--1 rho(1_1)
+-1 rho(2_1)
 <= 0
 
 c_u_xi_linearization_constraint2(2)_:
 +1 xi(1_3_0)
--1 rho(1_0)
+-1 rho(3_0)
 <= 0
 
 c_u_xi_linearization_constraint2(3)_:
 +1 xi(1_3_1)
--1 rho(1_1)
+-1 rho(3_1)
 <= 0
 
 c_u_xi_linearization_constraint2(4)_:
 +1 xi(1_4_0)
--1 rho(1_0)
+-1 rho(4_0)
 <= 0
 
 c_u_xi_linearization_constraint2(5)_:
 +1 xi(1_4_1)
--1 rho(1_1)
+-1 rho(4_1)
 <= 0
 
 c_u_xi_linearization_constraint2(6)_:
 +1 xi(2_3_0)
--1 rho(2_0)
+-1 rho(3_0)
 <= 0
 
 c_u_xi_linearization_constraint2(7)_:
 +1 xi(2_3_1)
--1 rho(2_1)
+-1 rho(3_1)
 <= 0
 
 c_u_xi_linearization_constraint2(8)_:
 +1 xi(4_5_0)
--1 rho(4_0)
+-1 rho(5_0)
 <= 0
 
 c_u_xi_linearization_constraint2(9)_:
 +1 xi(4_5_1)
--1 rho(4_1)
+-1 rho(5_1)
 <= 0
 
 c_u_xi_linearization_constraint3(0)_:
 +1 epsilon(1_2)
 -1 xi(1_2_0)
-+1 rho(1_0)
++1 rho(2_0)
 <= 1
 
 c_u_xi_linearization_constraint3(1)_:
 +1 epsilon(1_2)
 -1 xi(1_2_1)
-+1 rho(1_1)
++1 rho(2_1)
 <= 1
 
 c_u_xi_linearization_constraint3(2)_:
 +1 epsilon(1_3)
 -1 xi(1_3_0)
-+1 rho(1_0)
++1 rho(3_0)
 <= 1
 
 c_u_xi_linearization_constraint3(3)_:
 +1 epsilon(1_3)
 -1 xi(1_3_1)
-+1 rho(1_1)
++1 rho(3_1)
 <= 1
 
 c_u_xi_linearization_constraint3(4)_:
 +1 epsilon(1_4)
 -1 xi(1_4_0)
-+1 rho(1_0)
++1 rho(4_0)
 <= 1
 
 c_u_xi_linearization_constraint3(5)_:
 +1 epsilon(1_4)
 -1 xi(1_4_1)
-+1 rho(1_1)
++1 rho(4_1)
 <= 1
 
 c_u_xi_linearization_constraint3(6)_:
 +1 epsilon(2_3)
 -1 xi(2_3_0)
-+1 rho(2_0)
++1 rho(3_0)
 <= 1
 
 c_u_xi_linearization_constraint3(7)_:
 +1 epsilon(2_3)
 -1 xi(2_3_1)
-+1 rho(2_1)
++1 rho(3_1)
 <= 1
 
 c_u_xi_linearization_constraint3(8)_:
 +1 epsilon(4_5)
 -1 xi(4_5_0)
-+1 rho(4_0)
++1 rho(5_0)
 <= 1
 
 c_u_xi_linearization_constraint3(9)_:
 +1 epsilon(4_5)
 -1 xi(4_5_1)
-+1 rho(4_1)
++1 rho(5_1)
 <= 1
 
 c_u_vertex_represents_unique_partition(1)_:
@@ -233,6 +233,41 @@ c_u_max_kappa_:
 +1 kappa(neg)
 +1 kappa(pos)
 <= 2
+
+c_e_representants_and_non_representants_relationship(1)_:
++1 xi(1_2_0)
++1 xi(1_2_1)
++1 xi(1_3_0)
++1 xi(1_3_1)
++1 xi(1_4_0)
++1 xi(1_4_1)
++1 rho(1_0)
++1 rho(1_1)
+= 1
+
+c_e_representants_and_non_representants_relationship(2)_:
++1 xi(2_3_0)
++1 xi(2_3_1)
++1 rho(2_0)
++1 rho(2_1)
+= 1
+
+c_e_representants_and_non_representants_relationship(3)_:
+-1 rho(3_0)
+-1 rho(3_1)
+= -1
+
+c_e_representants_and_non_representants_relationship(4)_:
++1 xi(4_5_0)
++1 xi(4_5_1)
++1 rho(4_0)
++1 rho(4_1)
+= 1
+
+c_e_representants_and_non_representants_relationship(5)_:
+-1 rho(5_0)
+-1 rho(5_1)
+= -1
 
 c_u_strongly_connected_components(0)_:
 +4 epsilon(1_3)
