@@ -97,6 +97,9 @@ def kappa(sign):
 
 def xi(i, j, pi):
     return _model.xi[xi_index(i, j, pi)]
+
+def psi(i, j, k):
+    return _model.psi[psi_index(i, j, k)]
 #endregion model variables
 
 #region variable indexation
@@ -111,12 +114,15 @@ def kappa_index(sign):
 
 def xi_index(i, j, pi):
     return f'{i}_{j}_{pi}'
+
+def psi_index(i, j, k):
+    return f'{i}_{j}_{k}'
 #endregion variable indexation
 
 #region model creation
 _model = None
 
-def _set_linearization_variables():
+def _set_linearization_variables_xi():
     xi_indices = []
     for i in V:
         xi_indices.extend(cart([[i], n(i), Pi], ravel=True))
@@ -132,18 +138,42 @@ def _set_linearization_variables():
         else:
             return xi(i, j, pi) >= epsilon(i, j) + rho(j, pi) - 1
 
-    _model.xi_linearization_constraint1 = pyo.Constraint(
+    _model.xi_linearization_constraint_xi_1 = pyo.Constraint(
         list(range(len(xi_indices))), rule=lambda _, idx: get_constraints(idx, 'c1'))
-    _model.xi_linearization_constraint2 = pyo.Constraint(
+    _model.xi_linearization_constraint_xi_2 = pyo.Constraint(
         list(range(len(xi_indices))), rule=lambda _, idx: get_constraints(idx, 'c2'))
-    _model.xi_linearization_constraint3 = pyo.Constraint(
+    _model.xi_linearization_constraint_xi_3 = pyo.Constraint(
         list(range(len(xi_indices))), rule=lambda _, idx: get_constraints(idx, 'c3'))
+
+def _set_linearization_variables_psi():
+    psi_indices = []
+    for i, j in E:
+        psi_indices.extend(cart([[i], [j], n(i)], ravel=True))
+
+    _model.psi = pyo.Var(list(map(lambda t: psi_index(*t), psi_indices)), within=pyo.Binary)
+
+    def get_constraints(idx, c):
+        i, j, k = psi_indices[idx]
+        if c == 'c1':
+            return psi(i, j, k) <= epsilon(i, j)
+        elif c == 'c2':
+            return psi(i, j, k) <= epsilon(j, k)
+        else:
+            return psi(i, j, k) >= epsilon(i, j) + epsilon(j, k) - 1
+
+    _model.xi_linearization_constraint_psi_1 = pyo.Constraint(
+        list(range(len(psi_indices))), rule=lambda _, idx: get_constraints(idx, 'c1'))
+    _model.xi_linearization_constraint_psi_2 = pyo.Constraint(
+        list(range(len(psi_indices))), rule=lambda _, idx: get_constraints(idx, 'c2'))
+    _model.xi_linearization_constraint_psi_3 = pyo.Constraint(
+        list(range(len(psi_indices))), rule=lambda _, idx: get_constraints(idx, 'c3'))
 
 def _set_variables():
     _model.rho = pyo.Var(list(map(lambda t: rho_index(*t), cart([V, Pi]))), within=pyo.Binary)
     _model.epsilon = pyo.Var(list(map(lambda t: epsilon_index(*t), E)), within=pyo.Binary)
     _model.kappa = pyo.Var(list(map(kappa_index, ['neg', 'pos'])), within=pyo.PositiveReals)
-    _set_linearization_variables()
+    _set_linearization_variables_xi()
+    _set_linearization_variables_psi()
 
 def _set_objective():
     z = sum(map(lambda idx: omega(*idx) * epsilon(*idx), E)) + (K - kappa('neg') - kappa('pos')) * lamb
@@ -209,7 +239,7 @@ def _set_constraint6():
 
 def _create_model():
     global _model
-
+    
     _model = pyo.ConcreteModel()
 
     _set_variables()
@@ -249,5 +279,10 @@ def run():
 
     for i, j in E:
         print(i, j, epsilon(i, j)())
+
+    print()
+    for i in V:
+        for pi in Pi:
+            print(i, pi, rho(i, pi)())
 
     print(status)
