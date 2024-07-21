@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../')
+
 import set_operations
 
 print(set_operations.recursive_unpacking([1, 2, 3, 4, 5]))
