@@ -4,14 +4,18 @@ import numpy as np
 DATA = {'graph': None, 'Pi': None}
 
 def _format_index(args, format_function):
+    if format_function is None:
+        return args
     return format_function(*args)
 
-class _IndexFormating:
+class _VariableIndexFormating:
     def rho(i, pi):
         return f'Node({i})_Partition({pi})'
 
     def epsilon(i, j):
-        return f'Node({i})_Node({j})'
+        if i < j:
+            return f'Edge({i}, {j})'
+        return f'Edge({j}, {i})'
 
     def kappa(sign):
         return f'Sign({sign})'
@@ -20,34 +24,126 @@ class _IndexFormating:
         return f'Node({i})_Node({j})_Partition({pi})'
 
     def psi(i, j, k):
+        if j == k:
+            #epsilon(1, 2) * epsilon(1, 2) = epsilon(2, 1) * epsilon(2, 1)
+            #psi(1, 2, 2) = epsilon(1, 2) * epsilon(1, 2)
+            #psi(2, 1, 1) = epsilon(2, 1) * epsilon(2, 1)
+            #So psi(1, 2, 2) = psi(2, 1, 1)
+            min_ = min(i, j, k)
+            max_ = max(i, j, k)
+            return f'Node({min_})_Node({max_})_Node({max_})'
         return f'Node({i})_Node({j})_Node({k})'
+
+class _DecomposedModelStructure:
+    def objective():
+        pass
+
+    def c1():
+        constraints = {}
+        operation = lambda lhs, rhs: lhs <= rhs
+
+        for i in DATA['graph'].nodes:
+
+            lhs = {
+                'variables': {'rho': []}, 
+                'constants': []}
+            rhs = {
+                'variables': {}, 
+                'constants': [1]}
+
+            for pi in DATA['Pi']:
+                lhs['variables']['rho'].append({'index': (i, pi), 'coef': 1})
+            
+            constraints[f'Node({i})'] = {'lhs': lhs, 'rhs': rhs}
+
+        return constraints, operation
+
+    def c2():
+        constraints = {}
+        operation = lambda lhs, rhs: lhs <= rhs
+
+        for pi in DATA['pi']:
+
+            lhs = {
+                'variables': {'rho': []},
+                'constants': []}
+            rhs = {
+                'variables': {},
+                'constants': [1]}
+
+            for i in DATA['graph'].nodes:
+                lhs['variables']['rho'].append({'index': (i, pi), 'coef': 1})
+
+            constraints[f'Partition({pi})'] = {'lhs': lhs, 'rhs': rhs}
+
+        return constraints, operation
+
+    def c3():
+        constraints = {}
+        operation = lambda lhs, rhs: lhs == rhs
+
+        lhs = {
+            'variables': {'rho': [], 'kappa': []},
+            'constants': []}
+        rhs = {
+            'variables': {},
+            'constants': [_Constants.K]}
+
+        for pi in DATA['pi']:
+            for i in DATA['graph'].nodes:
+                lhs['variables']['rho'].append({'index': (i, pi), 'coef': 1})
+        lhs['variables']['kappa'].append({'index': ('-',), 'coef': 1})
+        lhs['variables']['kappa'].append({'index': ('+',), 'coef': -1})
+
+        constraints = {'lhs': lhs, 'rhs': rhs}
+
+        return constraints, operation
+
+    def c4():
+        constraints = {}
+        operation = lambda lhs, rhs: lhs <= rhs
+
+        lhs = {
+            'variables': {'kappa': []}, 
+            'constants': []}
+        rhs = {
+            'variables': {}, 
+            'constants': [_Constants.K]}
+        
+        lhs['variables']['kappa'].append({'index': ('-',), 'coef': 1})
+        lhs['variables']['kappa'].append({'index': ('+',), 'coef': 1})
+
+    def c5():
+        constraints = {}
+        operation = lambda lhs, rhs: lhs == rhs
+                
 
 class _IndexGenerators:
     def rho(format_index=False):
-        fn = _IndexFormating.rho if format_index else lambda arg: arg
+        fn = _IndexFormating.rho if format_index else None
         for i in DATA['graph'].nodes:
             for pi in DATA['Pi']:
                 yield _format_index((i, pi), fn)
     
     def epsilon(format_index=False):
-        fn = _IndexFormating.epsilon if format_index else lambda arg: arg
+        fn = _IndexFormating.epsilon if format_index else None
         for i, j, _ in DATA['graph'].edges:
             yield _format_index((i, j), fn)
 
     def kappa(format_index=False):
-        fn = _IndexFormating.kappa if format_index else lambda arg: arg
+        fn = _IndexFormating.kappa if format_index else None
         for sign in ['-', '+']:
             yield _format_index((sign,), fn)
 
     def xi(format_index=False):
-        fn = _IndexFormating.xi if format_index else lambda arg: arg
+        fn = _IndexFormating.xi if format_index else None
         for i in DATA['graph'].nodes:
             for j in DATA['graph'].neighborhoods(i):
                 for pi in DATA['Pi']:
                     yield _format_index((i, j, pi), fn)
 
     def psi(format_index=False):
-        fn = _IndexFormating.psi if format_index else lambda arg: arg
+        fn = _IndexFormating.psi if format_index else None
         for i, j, _ in DATA['graph'].edges:
             for k in DATA['graph'].neighborhoods(i):
                 yield _format_index((i, j, k), fn)
@@ -55,9 +151,34 @@ class _IndexGenerators:
                 yield _format_index((i, j, k), fn)
 
 class _Constants:
-    lambda_ = sum(w for _, _, w in DATA['graph'].edges)
-    K = len(DATA['Pi'])
+    lambda_ = None
+    K = None
+    def initialize():
+        _Constants.lambda_ = sum(w for _, _, w in DATA['graph'].edges)
+        _Constants.K = len(DATA['Pi'])
 
+def initialize(graph, Pi):
+    DATA['graph'] = graph
+    DATA['Pi'] = Pi
+
+    _Constants.initialize()
+
+    print(_DecomposedModelStructure.c1())
+
+    # for idx in _IndexGenerators.rho():
+    #     print(idx)
+
+    # for idx in _IndexGenerators.epsilon(format_index=True):
+    #     print(idx)
+
+    # for idx in _IndexGenerators.kappa():
+    #     print(idx)
+
+    # for idx in _IndexGenerators.xi():
+    #     print(idx)
+
+    # for idx in _IndexGenerators.psi():
+    #     print(idx)
 
 
 '''
