@@ -10,24 +10,25 @@ class Graph:
 
         self.__nodes_indices = {n: i for i, n in enumerate(nodes)}
         self.__indices_nodes = {i: n for i, n in enumerate(nodes)}
-        self.__graph = np.zeros((len(nodes), len(nodes)), dtype=np.float64)
+        self.__matrix = np.zeros((len(nodes), len(nodes)), dtype=np.float64)
         self.__set_weights(edges, weights)
         
         self.__edges = [(*edges[i], weights[i]) for i in range(len(edges))]
 
     def __getitem__(self, i):
         source, sink = i
-        return self.__graph[self.__nodes_indices[source], self.__nodes_indices[sink]]
+        return self.__matrix[self.__nodes_indices[source], self.__nodes_indices[sink]]
 
     def __str__(self):
-        return str(self.__graph)
+        return str(self.__matrix)
 
     def __repr__(self):
         return str(self)
 
     def __set_weights(self, edges, weights):
         for (source, sink), weight in zip(edges, weights):
-            self.__graph[self.__nodes_indices[source], self.__nodes_indices[sink]] = weight
+            self.__matrix[self.__nodes_indices[source], self.__nodes_indices[sink]] = weight
+            self.__matrix[self.__nodes_indices[sink], self.__nodes_indices[source]] = weight
 
     @property
     def nodes(self):
@@ -39,19 +40,12 @@ class Graph:
 
     @property
     def matrix(self):
-        matrix = getattr(self, '__matrix', None)
-        if matrix is None:
-            matrix = np.zeros((len(self.nodes), len(self.nodes)), dtype=np.float64)
-            for i, j, w in self.edges:
-                matrix[self.__nodes_indices[i], self.__nodes_indices[j]] = w
-                matrix[self.__nodes_indices[j], self.__nodes_indices[i]] = w
-            setattr(self, '__matrix', matrix)
-        return matrix
+        return self.__matrix
 
     def neighborhoods(self, n):
         neighborhoods = [
             self.__indices_nodes[i]
-            for i, weight in enumerate(self.__graph[self.__nodes_indices[n]]) 
+            for i, weight in enumerate(self.__matrix[self.__nodes_indices[n]]) 
             if weight != 0]
         return neighborhoods
 
