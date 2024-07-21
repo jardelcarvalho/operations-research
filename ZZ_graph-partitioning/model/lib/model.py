@@ -1,6 +1,66 @@
 import pyomo.environ as pyo
 import numpy as np
 
+DATA = {'graph': None, 'Pi': None}
+
+def _format_index(args, format_function):
+    return format_function(*args)
+
+class _IndexFormating:
+    def rho(i, pi):
+        return f'Node({i})_Partition({pi})'
+
+    def epsilon(i, j):
+        return f'Node({i})_Node({j})'
+
+    def kappa(sign):
+        return f'Sign({sign})'
+
+    def xi(i, j, pi):
+        return f'Node({i})_Node({j})_Partition({pi})'
+
+    def psi(i, j, k):
+        return f'Node({i})_Node({j})_Node({k})'
+
+class _IndexGenerators:
+    def rho(format_index=False):
+        fn = _IndexFormating.rho if format_index else lambda arg: arg
+        for i in DATA['graph'].nodes:
+            for pi in DATA['Pi']:
+                yield _format_index((i, pi), fn)
+    
+    def epsilon(format_index=False):
+        fn = _IndexFormating.epsilon if format_index else lambda arg: arg
+        for i, j, _ in DATA['graph'].edges:
+            yield _format_index((i, j), fn)
+
+    def kappa(format_index=False):
+        fn = _IndexFormating.kappa if format_index else lambda arg: arg
+        for sign in ['-', '+']:
+            yield _format_index((sign,), fn)
+
+    def xi(format_index=False):
+        fn = _IndexFormating.xi if format_index else lambda arg: arg
+        for i in DATA['graph'].nodes:
+            for j in DATA['graph'].neighborhoods(i):
+                for pi in DATA['Pi']:
+                    yield _format_index((i, j, pi), fn)
+
+    def psi(format_index=False):
+        fn = _IndexFormating.psi if format_index else lambda arg: arg
+        for i, j, _ in DATA['graph'].edges:
+            for k in DATA['graph'].neighborhoods(i):
+                yield _format_index((i, j, k), fn)
+            for k in DATA['graph'].neighborhoods(j):
+                yield _format_index((i, j, k), fn)
+
+class _Constants:
+    lambda_ = sum(w for _, _, w in DATA['graph'].edges)
+    K = len(DATA['Pi'])
+
+
+
+'''
 #region model constants
 lamb = None
 K = None
@@ -286,3 +346,5 @@ def run():
             print(i, pi, rho(i, pi)())
 
     print(status)
+
+'''

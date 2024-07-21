@@ -1,7 +1,6 @@
 from lib import io
 from lib import graph
-from lib import lp_model
-
+from lib import model
 
 if __name__ == '__main__':
     k = 2
@@ -11,7 +10,7 @@ if __name__ == '__main__':
         sink_col='Sink',
         weight_col='Weight')
 
-    lp_model.initialize(graph, k)
+    model.initialize(graph, k)
 
     print(graph)
     # print()
