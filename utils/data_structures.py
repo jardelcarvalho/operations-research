@@ -58,11 +58,3 @@ class Graph:
     def degree(self, n):
         return len(self.neighborhoods(n))
 
-def from_dataframe(df, source_col, sink_col, weight_col):
-
-    nodes = df[[source_col, sink_col]].to_numpy().ravel()
-    edges = df[[source_col, sink_col]].to_numpy()
-    weights = df[weight_col].to_numpy()
-
-    return _Graph(nodes, edges, weights)
-
