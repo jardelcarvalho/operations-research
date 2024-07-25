@@ -139,6 +139,9 @@ class _DecomposedModelStructure:
             constraints[f'Node({i})'] = {'lhs': lhs, 'rhs': rhs}
 
         return constraints, operation
+    
+    def c6():
+        pass
 
                 
 
