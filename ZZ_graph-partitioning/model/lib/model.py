@@ -158,7 +158,7 @@ class _DecomposedModelStructure:
 
         lhs = {
             'variables': {'psi': []}, 
-            'constants': [1]}
+            'constants': []}
         rhs = {
             'variables': {'psi': [], 'epsilon': []}, 
             'constants': []}
@@ -168,16 +168,16 @@ class _DecomposedModelStructure:
                 DATA['graph'].neighborhoods(i), DATA['graph'].neighborhoods(j)])
 
             for k in intersection:
-                lhs['variables']['psi'].append({'index': (i, j, k), 'coef': 1})
-                lhs['variables']['psi'].append({'index': (j, i, k), 'coef': 1})
+                lhs['variables']['psi'].append({'index': _VariableIndexFormating.psi(i, j, k), 'coef': 1})
+                lhs['variables']['psi'].append({'index': _VariableIndexFormating.psi(j, i, k), 'coef': 1})
             
             for k in DATA['graph'].neighborhoods(i):
-                rhs['variable']['psi'].append({'index': (i, j, k), 'coef': 1})
+                rhs['variable']['psi'].append({'index': _VariableIndexFormating.psi(i, j, k), 'coef': 1})
 
             for k in DATA['graph'].neighborhoods(j):
-                rhs['variable']['psi'].append({'index': (j, i, k), 'coef': 1})
+                rhs['variable']['psi'].append({'index': _VariableIndexFormating.psi(j, i, k), 'coef': 1})
 
-            rhs['variables']['epsilon'].apppend({'index': (i, j), 'coef': -2})
+            rhs['variables']['epsilon'].apppend({'index': _VariableIndexFormating.epsilon(i, j), 'coef': -2})
 
             constraints[f'Edge({i}, {j})'] = {'lhs': lhs, 'rhs': rhs}
 
@@ -189,7 +189,7 @@ class _DecomposedModelStructure:
 
         lhs = {
             'variables': {'psi': []}, 
-            'constants': [1]}
+            'constants': []}
         rhs = {
             'variables': {'psi': []}, 
             'constants': []}
@@ -199,14 +199,17 @@ class _DecomposedModelStructure:
                 DATA['graph'].neighborhoods(i), DATA['graph'].neighborhoods(j)])
             
             for k in intersection:
-                lhs['variables']['psi'].append({'index': (i, j, k), 'coef': 1})
+                lhs['variables']['psi'].append({'index': _VariableIndexFormating.psi(i, j, k), 'coef': 1})
 
             for k in  intersection:
-                rhs['variables']['psi'].append({'index': (j, i, k), 'coef': 1})
+                rhs['variables']['psi'].append({'index': _VariableIndexFormating.psi(j, i, k), 'coef': 1})
 
             constraints[f'Edge({i}, {j})'] = {'lhs': lhs, 'rhs': rhs}
 
         return constraints, operation
+
+    def c8():
+        pass
 
 class _IndexGenerators:
     def rho(format_index=False):
