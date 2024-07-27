@@ -125,7 +125,6 @@ class _DecomposedModelStructure:
     def c5():
         constraints = {}
         operation = lambda lhs, rhs: lhs == rhs
-<<<<<<< HEAD
 
         lhs = {
             'variables': {'rho': []}, 
@@ -133,7 +132,6 @@ class _DecomposedModelStructure:
         rhs = {
             'variables': {'xi': []}, 
             'constants': []}
-=======
         
         for i in DATA['graph'].nodes:
             lhs = {
@@ -149,22 +147,6 @@ class _DecomposedModelStructure:
             for j in DATA['graph'].neighborhoods(i):
                 for pi in DATA['pi']:
                     rhs['variables']['xi'].append((_VariableIndexFormating.xi(i, j, pi), 1))
-
-            constraints[f'Node({i})'] = {'lhs': lhs, 'rhs': rhs}
-
-        return constraints, operation
-    
-    def c6():
-        pass
-
->>>>>>> 7e17f20f9d87f2e6b8b4eeb0bfed166a070bc76d
-                
-        for i in DATA['graph'].nodes:
-            for pi in DATA['Pi']:
-                lhs['variables']['rho'].append({'index': (i, pi), 'coef': -1})
-            for j in DATA['graph'].neighborhoods(i):
-                for pi in DATA['Pi']:
-                    rhs['variables']['xi'].append({'index': (i, j, pi), 'coef': 1})
 
             constraints[f'Node({i})'] = {'lhs': lhs, 'rhs': rhs}
 
@@ -201,23 +183,30 @@ class _DecomposedModelStructure:
 
         return constraints, operation
         
-    # def c7():
-    #     constraints = {}
-    #     operation = lambda lhs, rhs: lhs == rhs
+    def c7():
+        constraints = {}
+        operation = lambda lhs, rhs: lhs == rhs
 
-    #     lhs = {
-    #         'variables': {'psi': []}, 
-    #         'constants': [1]}
-    #     rhs = {
-    #         'variables': {'psi': []}, 
-    #         'constants': []}
+        lhs = {
+            'variables': {'psi': []}, 
+            'constants': [1]}
+        rhs = {
+            'variables': {'psi': []}, 
+            'constants': []}
 
-    #     for i, j in DATA['graph'].edges:
-    #         intersection = set_operations.intersection([
-    #             DATA['graph'].neighborhoods(i), DATA['graph'].neighborhoods(j)])
+        for i, j in DATA['graph'].edges:
+            intersection = set_operations.intersection([
+                DATA['graph'].neighborhoods(i), DATA['graph'].neighborhoods(j)])
             
-    #         for k in intersection:
-    #             pass
+            for k in intersection:
+                lhs['variables']['psi'].append({'index': (i, j, k), 'coef': 1})
+
+            for k in  intersection:
+                rhs['variables']['psi'].append({'index': (j, i, k), 'coef': 1})
+
+            constraints[f'Edge({i}, {j})'] = {'lhs': lhs, 'rhs': rhs}
+
+        return constraints, operation
 
 class _IndexGenerators:
     def rho(format_index=False):
