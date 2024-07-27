@@ -116,7 +116,22 @@ class _DecomposedModelStructure:
     def c5():
         constraints = {}
         operation = lambda lhs, rhs: lhs == rhs
+
+        lhs = {
+            'variables': {'rho': []}, 
+            'constants': [1]}
+        rhs = {
+            'variables': {'xi': []}, 
+            'constants': []}
                 
+        for i in DATA['graph'].nodes:
+            for pi in DATA['Pi']:
+                lhs['variables']['rho'].append({'index': (i, pi), 'coef': -1})
+            for j in DATA['graph'].neighborhoods(i):
+                for pi in DATA['Pi']:
+                    rhs['variables']['xi'].append({'index': (i, j, pi), 'coef': 1})
+
+        return constraints, operation
 
 class _IndexGenerators:
     def rho(format_index=False):
