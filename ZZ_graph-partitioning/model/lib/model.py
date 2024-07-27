@@ -230,38 +230,6 @@ class _DecomposedModelStructure:
 
         return constraints, operation
 
-class _IndexGenerators:
-    def rho(format_index=False):
-        fn = _IndexFormating.rho if format_index else None
-        for i in DATA['graph'].nodes:
-            for pi in DATA['Pi']:
-                yield _format_index((i, pi), fn)
-    
-    def epsilon(format_index=False):
-        fn = _IndexFormating.epsilon if format_index else None
-        for i, j, _ in DATA['graph'].edges:
-            yield _format_index((i, j), fn)
-
-    def kappa(format_index=False):
-        fn = _IndexFormating.kappa if format_index else None
-        for sign in ['-', '+']:
-            yield _format_index((sign,), fn)
-
-    def xi(format_index=False):
-        fn = _IndexFormating.xi if format_index else None
-        for i in DATA['graph'].nodes:
-            for j in DATA['graph'].neighborhoods(i):
-                for pi in DATA['Pi']:
-                    yield _format_index((i, j, pi), fn)
-
-    def psi(format_index=False):
-        fn = _IndexFormating.psi if format_index else None
-        for i, j, _ in DATA['graph'].edges:
-            for k in DATA['graph'].neighborhoods(i):
-                yield _format_index((i, j, k), fn)
-            for k in DATA['graph'].neighborhoods(j):
-                yield _format_index((i, j, k), fn)
-
 class _Constants:
     lambda_ = None
     K = None
