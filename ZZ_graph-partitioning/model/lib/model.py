@@ -8,10 +8,13 @@ import numpy as np
 
 DATA = {'graph': None, 'Pi': None}
 
-def _format_index(args, format_function):
-    if format_function is None:
-        return args
-    return format_function(*args)
+class _Constants:
+    lambda_ = None
+    K = None
+    
+    def initialize(lambda_, K):
+        _Constants.lambda_ = lambda_
+        _Constants.K = K
 
 class _VariableIndexFormating:
     def rho(i, pi):
@@ -44,20 +47,46 @@ class _ConstraintHS:
         self.variables = {}
         self.constants = []
 
+    def __str__(self):
+        terms = []
+        for name in self.variables:
+            for index, coef in self.variables[name]:
+                terms.append(f'{coef}{name}_{index}')
+
+        for c in self.constants:
+            terms.append(str(c))
+
+        return ' + '.join(terms)
+
+    def __repr__(self):
+        return self.__str__()
+
     def variables_names(self):
         return list(self.variables.keys())
 
-    def add_variable(name, index, coef):
+    def add_variable(self, name, index, coef):
         if name not in self.variables:
             self.variables[name] = []
         self.variables[name].append((index, coef))
 
-    def add_constant(value):
+    def add_constant(self, value):
         self.constants.append(value)
 
 class _ConstraintsSet:
-    def __init__(self, operation):
-        self.operation = operation
+    def __init__(self, signal):
+        if signal == '<':
+            self.operation = lambda lhs, rhs: lhs < rhs
+        elif signal == '>':
+            self.operation = lambda lhs, rhs: lhs > rhs
+        elif signal == '<=':
+            self.operation = lambda lhs, rhs: lhs <= rhs
+        elif signal == '>=':
+            self.operation = lambda lhs, rhs: lhs >= rhs
+        elif signal == '==':
+            self.operation = lambda lhs, rhs: lhs == rhs
+        else:
+            raise Exception(f'Invalid signal: {signal}')
+        self.signal = signal
         self.constraints = {}
 
     def __getitem__(self, constraint_index):
@@ -65,70 +94,47 @@ class _ConstraintsSet:
             self.constraints[constraint_index] = {'rhs': _ConstraintHS(), 'lhs': _ConstraintHS()}
         return self.constraints[constraint_index]
 
+    def __str__(self):
+        lines = ''
+        for constraint_index in self.constraints:
+            lines += (
+                f"{constraint_index}:\t"\
+                f"{self.constraints[constraint_index]['lhs'].__str__()} "\
+                f"{self.signal} "\
+                f"{self.constraints[constraint_index]['rhs'].__str__()}\n")
+        return lines
+
+    def __repr__(self):
+        return self.__str__()
+
 class _DecomposedModelStructure:
     def objective():
         pass
 
     def c1():
-        constraint_set = _ConstraintsSet(lambda lhs, rhs: lhs <= rhs)
+        constraint_set = _ConstraintsSet('<=')
 
         for i in DATA['graph'].nodes:
-            constraint_set[f'Node({i})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(i, pi), 1)
+            for pi in DATA['Pi']:
+                constraint_set[f'Node({i})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(i, pi), 1)
             constraint_set[f'Node({i})']['rhs'].add_constant(1)
 
         return constraint_set
 
-        # constraints = {}
-        # operation = lambda lhs, rhs: lhs <= rhs
-
-        # for i in DATA['graph'].nodes:
-
-        #     lhs = {
-        #         'variables': {'rho': []}, 
-        #         'constants': []}
-        #     rhs = {
-        #         'variables': {}, 
-        #         'constants': [1]}
-
-        #     for pi in DATA['Pi']:
-        #         lhs['variables']['rho'].append((_VariableIndexFormating.rho(i, pi), 1))
-            
-        #     constraints[f'Node({i})'] = {'lhs': lhs, 'rhs': rhs}
-
-        # return constraints, operation
-
     def c2():
-        constraint_set = _ConstraintsSet(lambda lhs, rhs: lhs <= rhs)
+        constraint_set = _ConstraintsSet('<=')
 
         for pi in DATA['Pi']:
-            constraint_set[f'Partition({pi})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(i, pi), 1)
+            for i in DATA['graph'].nodes:
+                constraint_set[f'Partition({pi})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(i, pi), 1)
             constraint_set[f'Partition({pi})']['rhs'].add_constant(1)
 
         return constraint_set
 
-        # constraints = {}
-        # operation = lambda lhs, rhs: lhs <= rhs
-
-        # for pi in DATA['pi']:
-
-        #     lhs = {
-        #         'variables': {'rho': []},
-        #         'constants': []}
-        #     rhs = {
-        #         'variables': {},
-        #         'constants': [1]}
-
-        #     for i in DATA['graph'].nodes:
-        #         lhs['variables']['rho'].append((_VariableIndexFormating.rho(i, pi), 1))
-
-        #     constraints[f'Partition({pi})'] = {'lhs': lhs, 'rhs': rhs}
-
-        # return constraints, operation
-
     def c3():
-        constraint_set = _ConstraintsSet(lambda lhs, rhs: lhs == rhs)
+        constraint_set = _ConstraintsSet('==')
 
-        for pi in DATA['pi']:
+        for pi in DATA['Pi']:
             for i in DATA['graph'].nodes:
                 constraint_set['Unique']['lhs'].add_variable(
                     'rho', _VariableIndexFormating.rho(i, pi), 1)
@@ -139,28 +145,8 @@ class _DecomposedModelStructure:
 
         return constraint_set
 
-        # constraints = {}
-        # operation = lambda lhs, rhs: lhs == rhs
-
-        # lhs = {
-        #     'variables': {'rho': [], 'kappa': []},
-        #     'constants': []}
-        # rhs = {
-        #     'variables': {},
-        #     'constants': [_Constants.K]}
-
-        # for pi in DATA['pi']:
-        #     for i in DATA['graph'].nodes:
-        #         lhs['variables']['rho'].append({'index': (i, pi), 'coef': 1})
-        # lhs['variables']['kappa'].append((_VariableIndexFormating.kappa('-'), 1))
-        # lhs['variables']['kappa'].append((_VariableIndexFormating.kappa('+'), -1))
-
-        # constraints = {'lhs': lhs, 'rhs': rhs}
-
-        # return constraints, operation
-
     def c4():
-        constraint_set = _ConstraintsSet(lambda lhs, rhs: lhs <= rhs)
+        constraint_set = _ConstraintsSet('<=')
 
         constraint_set['Unique']['lhs'].add_variable('kappa', _VariableIndexFormating.kappa('-'), 1)
         constraint_set['Unique']['lhs'].add_variable('kappa', _VariableIndexFormating.kappa('+'), 1)
@@ -168,69 +154,23 @@ class _DecomposedModelStructure:
 
         return constraint_set
 
-        # constraints = {}
-        # operation = lambda lhs, rhs: lhs <= rhs
-
-        # lhs = {
-        #     'variables': {'kappa': []}, 
-        #     'constants': []}
-        # rhs = {
-        #     'variables': {}, 
-        #     'constants': [_Constants.K]}
-        
-        # lhs['variables']['kappa'].append((_VariableIndexFormating.kappa('-'), 1))
-        # lhs['variables']['kappa'].append((_VariableIndexFormating.kappa('+'), 1))
-
-        # constraints = {'lhs': lhs, 'rhs': rhs}
-
-        # return constraints, operation
-
     def c5():
-        constraint_set = _ConstraintsSet(lambda lhs, rhs: lhs == rhs)
+        constraint_set = _ConstraintsSet('==')
 
         for i in DATA['graph'].nodes:
             constraint_set[f'Node({i})']['lhs'].add_constant(1)
             for pi in DATA['Pi']:
                 constraint_set[f'Node({i})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(i, pi), -1)
             for j in DATA['graph'].neighborhoods(i):
-                for pi in DATA['pi']:
+                for pi in DATA['Pi']:
                     constraint_set[f'Node({i})']['rhs'].add_variable('xi', _VariableIndexFormating.xi(i, j, pi), 1)
             
         return constraint_set
 
-        # constraints = {}
-        # operation = lambda lhs, rhs: lhs == rhs
-
-        # lhs = {
-        #     'variables': {'rho': []}, 
-        #     'constants': [1]}
-        # rhs = {
-        #     'variables': {'xi': []}, 
-        #     'constants': []}
-        
-        # for i in DATA['graph'].nodes:
-        #     lhs = {
-        #         'variables': {'rho': []}, 
-        #         'constants': [1]}
-        #     rhs = {
-        #         'variables': {'xi': []}, 
-        #         'constants': []}
-            
-        #     for pi in DATA['Pi']:
-        #         lhs['variables']['rho'].append((_VariableIndexFormating.rho(i, pi), -1))
-
-        #     for j in DATA['graph'].neighborhoods(i):
-        #         for pi in DATA['pi']:
-        #             rhs['variables']['xi'].append((_VariableIndexFormating.xi(i, j, pi), 1))
-
-        #     constraints[f'Node({i})'] = {'lhs': lhs, 'rhs': rhs}
-
-        # return constraints, operation
-
     def c6():
-        constraint_set = _ConstraintsSet(lambda lhs, rhs: lhs == rhs)
+        constraint_set = _ConstraintsSet('==')
 
-        for i, j in DATA['graph'].edges:
+        for i, j, _ in DATA['graph'].edges:
             intersection = set_operations.intersection([
                 DATA['graph'].neighborhoods(i), DATA['graph'].neighborhoods(j)])
             
@@ -244,44 +184,14 @@ class _DecomposedModelStructure:
             for k in DATA['graph'].neighborhoods(j):
                 constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('psi', _VariableIndexFormating.psi(j, i, k), 1)
 
-            constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('epsilon', _VariableIndexFormating.epsilon(i, j, k), 2)
+            constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('epsilon', _VariableIndexFormating.epsilon(i, j), 2)
 
         return constraint_set
-
-        # constraints = {}
-        # operation = lambda lhs, rhs: lhs == rhs
-
-        # lhs = {
-        #     'variables': {'psi': []}, 
-        #     'constants': []}
-        # rhs = {
-        #     'variables': {'psi': [], 'epsilon': []}, 
-        #     'constants': []}
-
-        # for i, j in DATA['graph'].edges:
-        #     intersection = set_operations.intersection([
-        #         DATA['graph'].neighborhoods(i), DATA['graph'].neighborhoods(j)])
-
-        #     for k in intersection:
-        #         lhs['variables']['psi'].append({'index': _VariableIndexFormating.psi(i, j, k), 'coef': 1})
-        #         lhs['variables']['psi'].append({'index': _VariableIndexFormating.psi(j, i, k), 'coef': 1})
-            
-        #     for k in DATA['graph'].neighborhoods(i):
-        #         rhs['variable']['psi'].append({'index': _VariableIndexFormating.psi(i, j, k), 'coef': 1})
-
-        #     for k in DATA['graph'].neighborhoods(j):
-        #         rhs['variable']['psi'].append({'index': _VariableIndexFormating.psi(j, i, k), 'coef': 1})
-
-        #     rhs['variables']['epsilon'].apppend({'index': _VariableIndexFormating.epsilon(i, j), 'coef': -2})
-
-        #     constraints[f'Edge({i}, {j})'] = {'lhs': lhs, 'rhs': rhs}
-
-        # return constraints, operation
         
     def c7():
-        constraint_set = _ConstraintsSet(lambda lhs, rhs: lhs == rhs)
+        constraint_set = _ConstraintsSet('==')
 
-        for i, j in DATA['graph'].edges:
+        for i, j, _ in DATA['graph'].edges:
             intersection = set_operations.intersection([
                 DATA['graph'].neighborhoods(i), DATA['graph'].neighborhoods(j)])
 
@@ -293,92 +203,32 @@ class _DecomposedModelStructure:
 
         return constraint_set
 
-        # constraints = {}
-        # operation = lambda lhs, rhs: lhs == rhs
-
-        # lhs = {
-        #     'variables': {'psi': []}, 
-        #     'constants': []}
-        # rhs = {
-        #     'variables': {'psi': []}, 
-        #     'constants': []}
-
-        # for i, j in DATA['graph'].edges:
-        #     intersection = set_operations.intersection([
-        #         DATA['graph'].neighborhoods(i), DATA['graph'].neighborhoods(j)])
-            
-        #     for k in intersection:
-        #         lhs['variables']['psi'].append({'index': _VariableIndexFormating.psi(i, j, k), 'coef': 1})
-
-        #     for k in  intersection:
-        #         rhs['variables']['psi'].append({'index': _VariableIndexFormating.psi(j, i, k), 'coef': 1})
-
-        #     constraints[f'Edge({i}, {j})'] = {'lhs': lhs, 'rhs': rhs}
-
-        # return constraints, operation
-
     def c8():
-        constraint_set = _ConstraintsSet(lambda lhs, rhs: lhs == rhs)
+        constraint_set = _ConstraintsSet('==')
 
-        for i, j in DATA['graph'].edges:
+        for i, j, _ in DATA['graph'].edges:
             for k in DATA['graph'].neighborhoods(i):
                 constraint_set[f'Edge({i}, {j})']['lhs'].add_variable('psi', _VariableIndexFormating.psi(i, j, k), 1)
 
             for k in DATA['graph'].neighborhoods(j):
-                constraint_set[f'Edge({i}, {j})']['lhs'].add_variable('psi', _VariableIndexFormating.psi(j, i, k), 1)
+                constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('psi', _VariableIndexFormating.psi(j, i, k), 1)
 
         return constraint_set
-
-        # constraints = {}
-        # operation = lambda lhs, rhs: lhs == rhs
-
-        # lhs = {
-        #     'variables': {'psi': []}, 
-        #     'constants': []}
-        # rhs = {
-        #     'variables': {'psi': []}, 
-        #     'constants': []}
-
-        # for i, j in DATA['graph'].edges:
-        #     for k in DATA['graph'].neighborhoods(i):
-        #         lhs['variables']['psi'].append({'idnex': _VariableIndexFormating.psi(i, j, k), 'coef': 1})
-
-        #     for k in DATA['graph'].neighborhoods(j):
-        #         lhs['variables']['psi'].append({'idnex': _VariableIndexFormating.psi(j, i, k), 'coef': 1})
-
-        #     constraints[f'Edge({i}, {j})'] = {'lhs': lhs, 'rhs': rhs}
-
-        # return constraints, operation
-
-class _Constants:
-    lambda_ = None
-    K = None
-    def initialize():
-        _Constants.lambda_ = sum(w for _, _, w in DATA['graph'].edges)
-        _Constants.K = len(DATA['Pi'])
 
 def initialize(graph, Pi):
     DATA['graph'] = graph
     DATA['Pi'] = Pi
 
-    _Constants.initialize()
+    _Constants.initialize(sum(w for _, _, w in DATA['graph'].edges), len(DATA['Pi']))
 
-    print(_DecomposedModelStructure.c1())
-
-    # for idx in _IndexGenerators.rho():
-    #     print(idx)
-
-    # for idx in _IndexGenerators.epsilon(format_index=True):
-    #     print(idx)
-
-    # for idx in _IndexGenerators.kappa():
-    #     print(idx)
-
-    # for idx in _IndexGenerators.xi():
-    #     print(idx)
-
-    # for idx in _IndexGenerators.psi():
-    #     print(idx)
+    # print(_DecomposedModelStructure.c1())
+    # print(_DecomposedModelStructure.c2())
+    # print(_DecomposedModelStructure.c3())
+    # print(_DecomposedModelStructure.c4())
+    # print(_DecomposedModelStructure.c5())
+    # print(_DecomposedModelStructure.c6())
+    # print(_DecomposedModelStructure.c7())
+    print(_DecomposedModelStructure.c8())
 
 
 '''
