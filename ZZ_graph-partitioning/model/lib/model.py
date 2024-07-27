@@ -62,8 +62,7 @@ class _ConstraintsSet:
 
     def __getitem__(self, constraint_index):
         if constraint_index not in self.constraints:
-            self.constraints[constraint_index] = {
-                'rhs': _ConstraintHS(), 'lhs': _ConstraintHS()}
+            self.constraints[constraint_index] = {'rhs': _ConstraintHS(), 'lhs': _ConstraintHS()}
         return self.constraints[constraint_index]
 
 class _DecomposedModelStructure:
@@ -71,191 +70,285 @@ class _DecomposedModelStructure:
         pass
 
     def c1():
-        constraints = {}
-        operation = lambda lhs, rhs: lhs <= rhs
+        constraint_set = _ConstraintsSet(lambda lhs, rhs: lhs <= rhs)
 
         for i in DATA['graph'].nodes:
+            constraint_set[f'Node({i})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(i, pi), 1)
+            constraint_set[f'Node({i})']['rhs'].add_constant(1)
 
-            lhs = {
-                'variables': {'rho': []}, 
-                'constants': []}
-            rhs = {
-                'variables': {}, 
-                'constants': [1]}
+        return constraint_set
 
-            for pi in DATA['Pi']:
-                lhs['variables']['rho'].append((_VariableIndexFormating.rho(i, pi), 1))
+        # constraints = {}
+        # operation = lambda lhs, rhs: lhs <= rhs
+
+        # for i in DATA['graph'].nodes:
+
+        #     lhs = {
+        #         'variables': {'rho': []}, 
+        #         'constants': []}
+        #     rhs = {
+        #         'variables': {}, 
+        #         'constants': [1]}
+
+        #     for pi in DATA['Pi']:
+        #         lhs['variables']['rho'].append((_VariableIndexFormating.rho(i, pi), 1))
             
-            constraints[f'Node({i})'] = {'lhs': lhs, 'rhs': rhs}
+        #     constraints[f'Node({i})'] = {'lhs': lhs, 'rhs': rhs}
 
-        return constraints, operation
+        # return constraints, operation
 
     def c2():
-        constraints = {}
-        operation = lambda lhs, rhs: lhs <= rhs
+        constraint_set = _ConstraintsSet(lambda lhs, rhs: lhs <= rhs)
 
-        for pi in DATA['pi']:
+        for pi in DATA['Pi']:
+            constraint_set[f'Partition({pi})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(i, pi), 1)
+            constraint_set[f'Partition({pi})']['rhs'].add_constant(1)
 
-            lhs = {
-                'variables': {'rho': []},
-                'constants': []}
-            rhs = {
-                'variables': {},
-                'constants': [1]}
+        return constraint_set
 
-            for i in DATA['graph'].nodes:
-                lhs['variables']['rho'].append((_VariableIndexFormating.rho(i, pi), 1))
+        # constraints = {}
+        # operation = lambda lhs, rhs: lhs <= rhs
 
-            constraints[f'Partition({pi})'] = {'lhs': lhs, 'rhs': rhs}
+        # for pi in DATA['pi']:
 
-        return constraints, operation
+        #     lhs = {
+        #         'variables': {'rho': []},
+        #         'constants': []}
+        #     rhs = {
+        #         'variables': {},
+        #         'constants': [1]}
+
+        #     for i in DATA['graph'].nodes:
+        #         lhs['variables']['rho'].append((_VariableIndexFormating.rho(i, pi), 1))
+
+        #     constraints[f'Partition({pi})'] = {'lhs': lhs, 'rhs': rhs}
+
+        # return constraints, operation
 
     def c3():
-        constraints = {}
-        operation = lambda lhs, rhs: lhs == rhs
-
-        lhs = {
-            'variables': {'rho': [], 'kappa': []},
-            'constants': []}
-        rhs = {
-            'variables': {},
-            'constants': [_Constants.K]}
+        constraint_set = _ConstraintsSet(lambda lhs, rhs: lhs == rhs)
 
         for pi in DATA['pi']:
             for i in DATA['graph'].nodes:
-                lhs['variables']['rho'].append({'index': (i, pi), 'coef': 1})
-        lhs['variables']['kappa'].append((_VariableIndexFormating.kappa('-'), 1))
-        lhs['variables']['kappa'].append((_VariableIndexFormating.kappa('+'), -1))
+                constraint_set['Unique']['lhs'].add_variable(
+                    'rho', _VariableIndexFormating.rho(i, pi), 1)
 
-        constraints = {'lhs': lhs, 'rhs': rhs}
+        constraint_set['Unique']['lhs'].add_variable('kappa', _VariableIndexFormating.kappa('-'), 1)
+        constraint_set['Unique']['lhs'].add_variable('kappa', _VariableIndexFormating.kappa('+'), -1)
+        constraint_set['Unique']['rhs'].add_constant(_Constants.K)
 
-        return constraints, operation
+        return constraint_set
+
+        # constraints = {}
+        # operation = lambda lhs, rhs: lhs == rhs
+
+        # lhs = {
+        #     'variables': {'rho': [], 'kappa': []},
+        #     'constants': []}
+        # rhs = {
+        #     'variables': {},
+        #     'constants': [_Constants.K]}
+
+        # for pi in DATA['pi']:
+        #     for i in DATA['graph'].nodes:
+        #         lhs['variables']['rho'].append({'index': (i, pi), 'coef': 1})
+        # lhs['variables']['kappa'].append((_VariableIndexFormating.kappa('-'), 1))
+        # lhs['variables']['kappa'].append((_VariableIndexFormating.kappa('+'), -1))
+
+        # constraints = {'lhs': lhs, 'rhs': rhs}
+
+        # return constraints, operation
 
     def c4():
-        constraints = {}
-        operation = lambda lhs, rhs: lhs <= rhs
+        constraint_set = _ConstraintsSet(lambda lhs, rhs: lhs <= rhs)
 
-        lhs = {
-            'variables': {'kappa': []}, 
-            'constants': []}
-        rhs = {
-            'variables': {}, 
-            'constants': [_Constants.K]}
+        constraint_set['Unique']['lhs'].add_variable('kappa', _VariableIndexFormating.kappa('-'), 1)
+        constraint_set['Unique']['lhs'].add_variable('kappa', _VariableIndexFormating.kappa('+'), 1)
+        constraint_set['Unique']['rhs'].add_constant(_Constants.K)
+
+        return constraint_set
+
+        # constraints = {}
+        # operation = lambda lhs, rhs: lhs <= rhs
+
+        # lhs = {
+        #     'variables': {'kappa': []}, 
+        #     'constants': []}
+        # rhs = {
+        #     'variables': {}, 
+        #     'constants': [_Constants.K]}
         
-        lhs['variables']['kappa'].append((_VariableIndexFormating.kappa('-'), 1))
-        lhs['variables']['kappa'].append((_VariableIndexFormating.kappa('+'), 1))
+        # lhs['variables']['kappa'].append((_VariableIndexFormating.kappa('-'), 1))
+        # lhs['variables']['kappa'].append((_VariableIndexFormating.kappa('+'), 1))
 
-        constraints = {'lhs': lhs, 'rhs': rhs}
+        # constraints = {'lhs': lhs, 'rhs': rhs}
 
-        return constraints, operation
+        # return constraints, operation
 
     def c5():
-        constraints = {}
-        operation = lambda lhs, rhs: lhs == rhs
+        constraint_set = _ConstraintsSet(lambda lhs, rhs: lhs == rhs)
 
-        lhs = {
-            'variables': {'rho': []}, 
-            'constants': [1]}
-        rhs = {
-            'variables': {'xi': []}, 
-            'constants': []}
-        
         for i in DATA['graph'].nodes:
-            lhs = {
-                'variables': {'rho': []}, 
-                'constants': [1]}
-            rhs = {
-                'variables': {'xi': []}, 
-                'constants': []}
-            
+            constraint_set[f'Node({i})']['lhs'].add_constant(1)
             for pi in DATA['Pi']:
-                lhs['variables']['rho'].append((_VariableIndexFormating.rho(i, pi), -1))
-
+                constraint_set[f'Node({i})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(i, pi), -1)
             for j in DATA['graph'].neighborhoods(i):
                 for pi in DATA['pi']:
-                    rhs['variables']['xi'].append((_VariableIndexFormating.xi(i, j, pi), 1))
+                    constraint_set[f'Node({i})']['rhs'].add_variable('xi', _VariableIndexFormating.xi(i, j, pi), 1)
+            
+        return constraint_set
 
-            constraints[f'Node({i})'] = {'lhs': lhs, 'rhs': rhs}
+        # constraints = {}
+        # operation = lambda lhs, rhs: lhs == rhs
 
-        return constraints, operation
+        # lhs = {
+        #     'variables': {'rho': []}, 
+        #     'constants': [1]}
+        # rhs = {
+        #     'variables': {'xi': []}, 
+        #     'constants': []}
+        
+        # for i in DATA['graph'].nodes:
+        #     lhs = {
+        #         'variables': {'rho': []}, 
+        #         'constants': [1]}
+        #     rhs = {
+        #         'variables': {'xi': []}, 
+        #         'constants': []}
+            
+        #     for pi in DATA['Pi']:
+        #         lhs['variables']['rho'].append((_VariableIndexFormating.rho(i, pi), -1))
+
+        #     for j in DATA['graph'].neighborhoods(i):
+        #         for pi in DATA['pi']:
+        #             rhs['variables']['xi'].append((_VariableIndexFormating.xi(i, j, pi), 1))
+
+        #     constraints[f'Node({i})'] = {'lhs': lhs, 'rhs': rhs}
+
+        # return constraints, operation
 
     def c6():
-        constraints = {}
-        operation = lambda lhs, rhs: lhs == rhs
-
-        lhs = {
-            'variables': {'psi': []}, 
-            'constants': []}
-        rhs = {
-            'variables': {'psi': [], 'epsilon': []}, 
-            'constants': []}
+        constraint_set = _ConstraintsSet(lambda lhs, rhs: lhs == rhs)
 
         for i, j in DATA['graph'].edges:
             intersection = set_operations.intersection([
                 DATA['graph'].neighborhoods(i), DATA['graph'].neighborhoods(j)])
-
-            for k in intersection:
-                lhs['variables']['psi'].append({'index': _VariableIndexFormating.psi(i, j, k), 'coef': 1})
-                lhs['variables']['psi'].append({'index': _VariableIndexFormating.psi(j, i, k), 'coef': 1})
             
+            for k in intersection:
+                constraint_set[f'Edge({i}, {j})']['lhs'].add_variable('psi', _VariableIndexFormating.psi(i, j, k), 1)
+                constraint_set[f'Edge({i}, {j})']['lhs'].add_variable('psi', _VariableIndexFormating.psi(j, i, k), 1)
+
             for k in DATA['graph'].neighborhoods(i):
-                rhs['variable']['psi'].append({'index': _VariableIndexFormating.psi(i, j, k), 'coef': 1})
+                constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('psi', _VariableIndexFormating.psi(i, j, k), 1)
 
             for k in DATA['graph'].neighborhoods(j):
-                rhs['variable']['psi'].append({'index': _VariableIndexFormating.psi(j, i, k), 'coef': 1})
+                constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('psi', _VariableIndexFormating.psi(j, i, k), 1)
 
-            rhs['variables']['epsilon'].apppend({'index': _VariableIndexFormating.epsilon(i, j), 'coef': -2})
+            constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('epsilon', _VariableIndexFormating.epsilon(i, j, k), 2)
 
-            constraints[f'Edge({i}, {j})'] = {'lhs': lhs, 'rhs': rhs}
+        return constraint_set
 
-        return constraints, operation
+        # constraints = {}
+        # operation = lambda lhs, rhs: lhs == rhs
+
+        # lhs = {
+        #     'variables': {'psi': []}, 
+        #     'constants': []}
+        # rhs = {
+        #     'variables': {'psi': [], 'epsilon': []}, 
+        #     'constants': []}
+
+        # for i, j in DATA['graph'].edges:
+        #     intersection = set_operations.intersection([
+        #         DATA['graph'].neighborhoods(i), DATA['graph'].neighborhoods(j)])
+
+        #     for k in intersection:
+        #         lhs['variables']['psi'].append({'index': _VariableIndexFormating.psi(i, j, k), 'coef': 1})
+        #         lhs['variables']['psi'].append({'index': _VariableIndexFormating.psi(j, i, k), 'coef': 1})
+            
+        #     for k in DATA['graph'].neighborhoods(i):
+        #         rhs['variable']['psi'].append({'index': _VariableIndexFormating.psi(i, j, k), 'coef': 1})
+
+        #     for k in DATA['graph'].neighborhoods(j):
+        #         rhs['variable']['psi'].append({'index': _VariableIndexFormating.psi(j, i, k), 'coef': 1})
+
+        #     rhs['variables']['epsilon'].apppend({'index': _VariableIndexFormating.epsilon(i, j), 'coef': -2})
+
+        #     constraints[f'Edge({i}, {j})'] = {'lhs': lhs, 'rhs': rhs}
+
+        # return constraints, operation
         
     def c7():
-        constraints = {}
-        operation = lambda lhs, rhs: lhs == rhs
-
-        lhs = {
-            'variables': {'psi': []}, 
-            'constants': []}
-        rhs = {
-            'variables': {'psi': []}, 
-            'constants': []}
+        constraint_set = _ConstraintsSet(lambda lhs, rhs: lhs == rhs)
 
         for i, j in DATA['graph'].edges:
             intersection = set_operations.intersection([
                 DATA['graph'].neighborhoods(i), DATA['graph'].neighborhoods(j)])
-            
+
             for k in intersection:
-                lhs['variables']['psi'].append({'index': _VariableIndexFormating.psi(i, j, k), 'coef': 1})
+                constraint_set[f'Edge({i}, {j})']['lhs'].add_variable('psi', _VariableIndexFormating.psi(i, j, k), 1)
 
-            for k in  intersection:
-                rhs['variables']['psi'].append({'index': _VariableIndexFormating.psi(j, i, k), 'coef': 1})
+            for k in intersection:
+                constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('psi', _VariableIndexFormating.psi(j, i, k), 1)
 
-            constraints[f'Edge({i}, {j})'] = {'lhs': lhs, 'rhs': rhs}
+        return constraint_set
 
-        return constraints, operation
+        # constraints = {}
+        # operation = lambda lhs, rhs: lhs == rhs
+
+        # lhs = {
+        #     'variables': {'psi': []}, 
+        #     'constants': []}
+        # rhs = {
+        #     'variables': {'psi': []}, 
+        #     'constants': []}
+
+        # for i, j in DATA['graph'].edges:
+        #     intersection = set_operations.intersection([
+        #         DATA['graph'].neighborhoods(i), DATA['graph'].neighborhoods(j)])
+            
+        #     for k in intersection:
+        #         lhs['variables']['psi'].append({'index': _VariableIndexFormating.psi(i, j, k), 'coef': 1})
+
+        #     for k in  intersection:
+        #         rhs['variables']['psi'].append({'index': _VariableIndexFormating.psi(j, i, k), 'coef': 1})
+
+        #     constraints[f'Edge({i}, {j})'] = {'lhs': lhs, 'rhs': rhs}
+
+        # return constraints, operation
 
     def c8():
-        constraints = {}
-        operation = lambda lhs, rhs: lhs == rhs
-
-        lhs = {
-            'variables': {'psi': []}, 
-            'constants': []}
-        rhs = {
-            'variables': {'psi': []}, 
-            'constants': []}
+        constraint_set = _ConstraintsSet(lambda lhs, rhs: lhs == rhs)
 
         for i, j in DATA['graph'].edges:
             for k in DATA['graph'].neighborhoods(i):
-                lhs['variables']['psi'].append({'idnex': _VariableIndexFormating.psi(i, j, k), 'coef': 1})
+                constraint_set[f'Edge({i}, {j})']['lhs'].add_variable('psi', _VariableIndexFormating.psi(i, j, k), 1)
 
             for k in DATA['graph'].neighborhoods(j):
-                lhs['variables']['psi'].append({'idnex': _VariableIndexFormating.psi(j, i, k), 'coef': 1})
+                constraint_set[f'Edge({i}, {j})']['lhs'].add_variable('psi', _VariableIndexFormating.psi(j, i, k), 1)
 
-            constraints[f'Edge({i}, {j})'] = {'lhs': lhs, 'rhs': rhs}
+        return constraint_set
 
-        return constraints, operation
+        # constraints = {}
+        # operation = lambda lhs, rhs: lhs == rhs
+
+        # lhs = {
+        #     'variables': {'psi': []}, 
+        #     'constants': []}
+        # rhs = {
+        #     'variables': {'psi': []}, 
+        #     'constants': []}
+
+        # for i, j in DATA['graph'].edges:
+        #     for k in DATA['graph'].neighborhoods(i):
+        #         lhs['variables']['psi'].append({'idnex': _VariableIndexFormating.psi(i, j, k), 'coef': 1})
+
+        #     for k in DATA['graph'].neighborhoods(j):
+        #         lhs['variables']['psi'].append({'idnex': _VariableIndexFormating.psi(j, i, k), 'coef': 1})
+
+        #     constraints[f'Edge({i}, {j})'] = {'lhs': lhs, 'rhs': rhs}
+
+        # return constraints, operation
 
 class _Constants:
     lambda_ = None
