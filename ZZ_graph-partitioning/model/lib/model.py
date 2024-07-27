@@ -209,7 +209,26 @@ class _DecomposedModelStructure:
         return constraints, operation
 
     def c8():
-        pass
+        constraints = {}
+        operation = lambda lhs, rhs: lhs == rhs
+
+        lhs = {
+            'variables': {'psi': []}, 
+            'constants': []}
+        rhs = {
+            'variables': {'psi': []}, 
+            'constants': []}
+
+        for i, j in DATA['graph'].edges:
+            for k in DATA['graph'].neighborhoods(i):
+                lhs['variables']['psi'].append({'idnex': _VariableIndexFormating.psi(i, j, k), 'coef': 1})
+
+            for k in DATA['graph'].neighborhoods(j):
+                lhs['variables']['psi'].append({'idnex': _VariableIndexFormating.psi(j, i, k), 'coef': 1})
+
+            constraints[f'Edge({i}, {j})'] = {'lhs': lhs, 'rhs': rhs}
+
+        return constraints, operation
 
 class _IndexGenerators:
     def rho(format_index=False):
