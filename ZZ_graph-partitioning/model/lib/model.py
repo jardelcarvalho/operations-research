@@ -57,7 +57,7 @@ class _DecomposedModelStructure:
                 'constants': [1]}
 
             for pi in DATA['Pi']:
-                lhs['variables']['rho'].append({'index': (i, pi), 'coef': 1})
+                lhs['variables']['rho'].append((_VariableIndexFormating.rho(i, pi), 1))
             
             constraints[f'Node({i})'] = {'lhs': lhs, 'rhs': rhs}
 
@@ -77,7 +77,7 @@ class _DecomposedModelStructure:
                 'constants': [1]}
 
             for i in DATA['graph'].nodes:
-                lhs['variables']['rho'].append({'index': (i, pi), 'coef': 1})
+                lhs['variables']['rho'].append((_VariableIndexFormating.rho(i, pi), 1))
 
             constraints[f'Partition({pi})'] = {'lhs': lhs, 'rhs': rhs}
 
@@ -97,8 +97,8 @@ class _DecomposedModelStructure:
         for pi in DATA['pi']:
             for i in DATA['graph'].nodes:
                 lhs['variables']['rho'].append({'index': (i, pi), 'coef': 1})
-        lhs['variables']['kappa'].append({'index': ('-',), 'coef': 1})
-        lhs['variables']['kappa'].append({'index': ('+',), 'coef': -1})
+        lhs['variables']['kappa'].append((_VariableIndexFormating.kappa('-'), 1))
+        lhs['variables']['kappa'].append((_VariableIndexFormating.kappa('+'), -1))
 
         constraints = {'lhs': lhs, 'rhs': rhs}
 
@@ -115,12 +115,17 @@ class _DecomposedModelStructure:
             'variables': {}, 
             'constants': [_Constants.K]}
         
-        lhs['variables']['kappa'].append({'index': ('-',), 'coef': 1})
-        lhs['variables']['kappa'].append({'index': ('+',), 'coef': 1})
+        lhs['variables']['kappa'].append((_VariableIndexFormating.kappa('-'), 1))
+        lhs['variables']['kappa'].append((_VariableIndexFormating.kappa('+'), 1))
+
+        constraints = {'lhs': lhs, 'rhs': rhs}
+
+        return constraints, operation
 
     def c5():
         constraints = {}
         operation = lambda lhs, rhs: lhs == rhs
+<<<<<<< HEAD
 
         lhs = {
             'variables': {'rho': []}, 
@@ -128,6 +133,31 @@ class _DecomposedModelStructure:
         rhs = {
             'variables': {'xi': []}, 
             'constants': []}
+=======
+        
+        for i in DATA['graph'].nodes:
+            lhs = {
+                'variables': {'rho': []}, 
+                'constants': [1]}
+            rhs = {
+                'variables': {'xi': []}, 
+                'constants': []}
+            
+            for pi in DATA['Pi']:
+                lhs['variables']['rho'].append((_VariableIndexFormating.rho(i, pi), -1))
+
+            for j in DATA['graph'].neighborhoods(i):
+                for pi in DATA['pi']:
+                    rhs['variables']['xi'].append((_VariableIndexFormating.xi(i, j, pi), 1))
+
+            constraints[f'Node({i})'] = {'lhs': lhs, 'rhs': rhs}
+
+        return constraints, operation
+    
+    def c6():
+        pass
+
+>>>>>>> 7e17f20f9d87f2e6b8b4eeb0bfed166a070bc76d
                 
         for i in DATA['graph'].nodes:
             for pi in DATA['Pi']:
