@@ -39,6 +39,33 @@ class _VariableIndexFormating:
             return f'Node({min_})_Node({max_})_Node({max_})'
         return f'Node({i})_Node({j})_Node({k})'
 
+class _ConstraintHS:
+    def __init__(self):
+        self.variables = {}
+        self.constants = []
+
+    def variables_names(self):
+        return list(self.variables.keys())
+
+    def add_variable(name, index, coef):
+        if name not in self.variables:
+            self.variables[name] = []
+        self.variables[name].append((index, coef))
+
+    def add_constant(value):
+        self.constants.append(value)
+
+class _ConstraintsSet:
+    def __init__(self, operation):
+        self.operation = operation
+        self.constraints = {}
+
+    def __getitem__(self, constraint_index):
+        if constraint_index not in self.constraints:
+            self.constraints[constraint_index] = {
+                'rhs': _ConstraintHS(), 'lhs': _ConstraintHS()}
+        return self.constraints[constraint_index]
+
 class _DecomposedModelStructure:
     def objective():
         pass
