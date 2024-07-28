@@ -1,3 +1,6 @@
 Move some functions from decomposition to util
 Implement graph visualization instead using images in .ipynb (this will facilitate tests at the next step)
 Tests tests tests
+
+Testing notes
+The number of partitions cannot be < than the real number of components (otherwise model will be infeasible)
