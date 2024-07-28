@@ -42,7 +42,7 @@ class _VariableIndexFormating:
             return f'Node({min_})_Node({max_})_Node({max_})'
         return f'Node({i})_Node({j})_Node({k})'
 
-class _ConstraintHS:
+class _ExpressionTerms:
     def __init__(self):
         self.variables = {}
         self.constants = []
@@ -61,6 +61,7 @@ class _ConstraintHS:
     def __repr__(self):
         return self.__str__()
 
+    @property
     def variables_names(self):
         return list(self.variables.keys())
 
@@ -91,7 +92,7 @@ class _ConstraintsSet:
 
     def __getitem__(self, constraint_index):
         if constraint_index not in self.constraints:
-            self.constraints[constraint_index] = {'rhs': _ConstraintHS(), 'lhs': _ConstraintHS()}
+            self.constraints[constraint_index] = {'rhs': _ExpressionTerms(), 'lhs': _ExpressionTerms()}
         return self.constraints[constraint_index]
 
     def __str__(self):
@@ -107,9 +108,35 @@ class _ConstraintsSet:
     def __repr__(self):
         return self.__str__()
 
+def get_grouped_variables_indices(objective, constraints_set_list):
+    expressions = [objective]
+    for constraints_set in constraints_set_list:
+        for constraint_index in constraints_set.constraints:
+            expressions.append(constraints_set.constraints[constraint_index]['lhs'])
+            expressions.append(constraints_set.constraints[constraint_index]['rhs'])
+
+    variables = {}
+    for expr in expressions:
+        for name in expr.variables:
+            if name not in variables:
+                variables[name] = set()
+            for index, _ in expr.variables[name]:
+                variables[name] |= {index}
+
+    return variables
+
 class _DecomposedModelStructure:
     def objective():
-        pass
+        objective = _ExpressionTerms()
+
+        for i, j, weight in DATA['graph'].edges:
+            objective.add_variable('epsilon', _VariableIndexFormating.epsilon(i, j), weight)
+        
+        objective.add_constant(_Constants.K * _Constants.lambda_)
+        objective.add_variable('kappa', _VariableIndexFormating.kappa('-'), -_Constants.lambda_)
+        objective.add_variable('kappa', _VariableIndexFormating.kappa('+'), -_Constants.lambda_) 
+
+        return objective
 
     def c1():
         constraint_set = _ConstraintsSet('<=')
@@ -221,14 +248,20 @@ def initialize(graph, Pi):
 
     _Constants.initialize(sum(w for _, _, w in DATA['graph'].edges), len(DATA['Pi']))
 
-    # print(_DecomposedModelStructure.c1())
-    # print(_DecomposedModelStructure.c2())
-    # print(_DecomposedModelStructure.c3())
-    # print(_DecomposedModelStructure.c4())
-    # print(_DecomposedModelStructure.c5())
-    # print(_DecomposedModelStructure.c6())
-    # print(_DecomposedModelStructure.c7())
-    print(_DecomposedModelStructure.c8())
+    objective = _DecomposedModelStructure.objective()
+    c1 = _DecomposedModelStructure.c1()
+    c2 = _DecomposedModelStructure.c2()
+    c3 = _DecomposedModelStructure.c3()
+    c4 = _DecomposedModelStructure.c4()
+    c5 = _DecomposedModelStructure.c5()
+    c6 = _DecomposedModelStructure.c6()
+    c7 = _DecomposedModelStructure.c7()
+    c8 = _DecomposedModelStructure.c8()
+
+    all_variables_indices = get_grouped_variables_indices(objective, [c1, c2, c3, c4, c5, c6, c7, c8])
+
+    for name in all_variables_indices:
+        print(f'{name}:\t', '  '.join(all_variables_indices[name]), sep='', end='\n\n')
 
 
 '''
