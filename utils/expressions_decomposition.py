@@ -46,6 +46,10 @@ class ConstraintsSet:
         self.signal = signal
         self.constraints = {}
 
+    @property
+    def indices_names(self):
+        return list(self.constraints.keys())
+
     def __getitem__(self, constraint_index):
         if constraint_index not in self.constraints:
             self.constraints[constraint_index] = {'rhs': ExpressionTerms(), 'lhs': ExpressionTerms()}
