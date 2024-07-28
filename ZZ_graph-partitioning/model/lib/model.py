@@ -13,323 +13,93 @@ def _create_variables_pyomo_model(model, all_variables_indices, within_map):
     for name in all_variables_indices:
         setattr(model, name, pyo.Var(all_variables_indices[name], within=within_map[name]))
 
-def _create_constraints_pyomo_model(model, decomposed_constraints):
-    pass
+def _evaluate_expression(model, expression_terms):
+    variables = []
+    for name in expression_terms.variables:
+        var = getattr(model, name, None)
+        for index, coef in expression_terms.variables[name]:
+            variables.append(coef * var[index])
+    return sum(variables) + sum(expression_terms.constants)
 
-def initialize(graph, Pi):
+def _create_constraints_pyomo_model(model, constraints_set_list):
+    for name, constraints_set in constraints_set_list:
+        constraint = pyo.Constraint(
+            constraints_set.indices_names, 
+            rule=lambda _, index: constraints_set.operation(
+                _evaluate_expression(model, constraints_set.constraints[index]['lhs']), 
+                _evaluate_expression(model, constraints_set.constraints[index]['rhs'])))
+
+        setattr(model, name, constraint)
+
+def _create_objective_pyomo_model(model, expression_terms, sense):
+    model.z = pyo.Objective(expr=_evaluate_expression(model, expression_terms), sense=sense)
+
+_MODEL = None
+
+def initialize(graph, Pi, lp_file_path=None):
+    global _MODEL
+
     data.initialize(graph, Pi)
 
     objective = DecomposedModelStructure.objective()
-    decomposed_constraints = [
-        DecomposedModelStructure.c1(),
-        DecomposedModelStructure.c2(),
-        DecomposedModelStructure.c3(),
-        DecomposedModelStructure.c4(),
-        DecomposedModelStructure.c5(),
-        DecomposedModelStructure.c6(),
-        DecomposedModelStructure.c7(),
-        DecomposedModelStructure.c8(),
-        *DecomposedModelStructure.c9_xi_linearization(),
-        *DecomposedModelStructure.c9_xi_linearization()]
-    
-    # c9_leq1, c9_leq2, c9_geq = DecomposedModelStructure.c9_xi_linearization()
-    # c10_leq1, c10_leq2, c10_geq = DecomposedModelStructure.c10_psi_linearization()
+    c9_leq1, c9_leq2, c9_geq = DecomposedModelStructure.c9_xi_linearization()
+    c10_leq1, c10_leq2, c10_geq = DecomposedModelStructure.c10_psi_linearization()
+    constraints_set_list = [
+        ('node_can_represent_unique_partition', DecomposedModelStructure.c1()),
+        ('partition_can_have_unique_representant', DecomposedModelStructure.c2()),
+        ('relaxation_of_number_of_partitions', DecomposedModelStructure.c3()),
+        ('maximum_relaxation_of_partitions', DecomposedModelStructure.c4()),
+        ('representants_cannot_be_adjacent', DecomposedModelStructure.c5()),
+        ('mutal_neighborhoods', DecomposedModelStructure.c6()),
+        ('mutual_neighborhoods_integrity_lhs', DecomposedModelStructure.c7()),
+        ('mutual_neighborhoods_integrity_rhs', DecomposedModelStructure.c8()),
+        ('xi_linearization_leq1', c9_leq1),
+        ('xi_linearization_leq2', c9_leq2),
+        ('xi_linearization_geq', c9_geq),
+        ('psi_linearization_leq1', c10_leq1),
+        ('psi_linearization_leq2', c10_leq2),
+        ('psi_linearization_geq', c10_geq)]
 
-    all_variables_indices = expressions_decomposition.get_grouped_variables_indices(objective, decomposed_constraints)
+    all_variables_indices = expressions_decomposition.get_grouped_variables_indices(
+        objective, [c for _, c in constraints_set_list])
 
-    for name in all_variables_indices:
-        print(f'{name}:\t', '  '.join(all_variables_indices[name]), sep='', end='\n\n')
+    # for name in all_variables_indices:
+    #     print(f'{name}:\t', '  '.join(all_variables_indices[name]), sep='', end='\n\n')
 
     model = pyo.ConcreteModel()
 
-    _create_variables_pyomo_model(model, all_variables_indices, {name: pyo.Binary for name in all_variables_indices})
-    _create_constraints_pyomo_model(model, decomposed_constraints)
+    within_map = {name: pyo.Binary for name in all_variables_indices}
+    within_map['kappa'] = pyo.PositiveReals
 
-'''
-#region model constants
-lamb = None
-K = None
+    _create_variables_pyomo_model(model, all_variables_indices, within_map)
+    _create_constraints_pyomo_model(model, constraints_set_list)
+    _create_objective_pyomo_model(model, objective, pyo.minimize)
 
-def _compute_lamb(graph):
-    r = 0
-    for n in graph.nodes:
-        for neighborhood in graph.neighborhoods(n):
-            r += graph[n, neighborhood]
-    return r
+    if lp_file_path is not None:
+        model.write(lp_file_path, io_options={'symbolic_solver_labels': True})
 
-def _set_model_constants(graph, _K):
-    global lamb
-    global K
-
-    K = _K
-    lamb = _compute_lamb(graph)
-#endregion model constants
-
-#region model sets
-V = None
-E = None
-Pi = None
-
-def _set_model_sets(graph, K):
-    global V
-    global E
-    global Pi
-
-    V = graph.nodes
-    E = graph.edges
-    Pi = list(range(K))
-#endregion model sets
-
-#region model functions
-n = None
-omega = None
-
-def cart(sets, ravel=False):
-    res = sets[0]
-    for i in range(1, len(sets)):
-        new = []
-        for a in res:
-            for b in sets[i]:
-                if ravel:
-                    new_a = [a]
-                    if isinstance(a, (set, tuple)):
-                        new_a = list(a)
-                    new_b = [b]
-                    if isinstance(b, (set, tuple)):
-                        new_b = list(b)
-                    new.append(tuple(new_a + new_b))
-                else:
-                    new.append((a, b))
-        res = new
-    return res
-
-def intersection(sets):
-    res = set()
-    minor_set, _ = min(list(map(lambda s: (s, len(s)), sets)), key=lambda t: t[1])
-    for e in minor_set:
-        intersects_all = True
-        for other_set in sets:
-            if e not in other_set:
-                intersects_all = False
-                break
-        if intersects_all:
-            res.add(e)
-    return list(res)
-
-def _set_model_functions(graph, _):
-    global n
-    global omega
-
-    def func_n(i):
-        return graph.neighborhoods(i)
-
-    def func_omega(i, j):
-        return graph[i, j]
-        
-    n = func_n
-    omega = func_omega
-#endregion model functions
-
-#region model variables
-def rho(i, pi):
-    return _model.rho[rho_index(i, pi)]
-
-def epsilon(i, j):
-    return _model.epsilon[epsilon_index(i, j)]
-
-def kappa(sign):
-    return _model.kappa[kappa_index(sign)]
-
-def xi(i, j, pi):
-    return _model.xi[xi_index(i, j, pi)]
-
-def psi(i, j, k):
-    return _model.psi[psi_index(i, j, k)]
-#endregion model variables
-
-#region variable indexation
-def rho_index(i, pi):
-    return f'{i}_{pi}'
-
-def epsilon_index(i, j):
-    return f'{i}_{j}'
-
-def kappa_index(sign):
-    return f'{sign}'
-
-def xi_index(i, j, pi):
-    return f'{i}_{j}_{pi}'
-
-def psi_index(i, j, k):
-    return f'{i}_{j}_{k}'
-#endregion variable indexation
-
-#region model creation
-_model = None
-
-def _set_linearization_variables_xi():
-    xi_indices = []
-    for i in V:
-        xi_indices.extend(cart([[i], n(i), Pi], ravel=True))
-
-    _model.xi = pyo.Var(list(map(lambda t: xi_index(*t), xi_indices)), within=pyo.Binary)
-
-    def get_constraints(idx, c):
-        i, j, pi = xi_indices[idx]
-        if c == 'c1':
-            return xi(i, j, pi) <= epsilon(i, j)
-        elif c == 'c2':
-            return xi(i, j, pi) <= rho(j, pi)
-        else:
-            return xi(i, j, pi) >= epsilon(i, j) + rho(j, pi) - 1
-
-    _model.xi_linearization_constraint_xi_1 = pyo.Constraint(
-        list(range(len(xi_indices))), rule=lambda _, idx: get_constraints(idx, 'c1'))
-    _model.xi_linearization_constraint_xi_2 = pyo.Constraint(
-        list(range(len(xi_indices))), rule=lambda _, idx: get_constraints(idx, 'c2'))
-    _model.xi_linearization_constraint_xi_3 = pyo.Constraint(
-        list(range(len(xi_indices))), rule=lambda _, idx: get_constraints(idx, 'c3'))
-
-def _set_linearization_variables_psi():
-    psi_indices = []
-    for i, j in E:
-        psi_indices.extend(cart([[i], [j], n(i)], ravel=True))
-
-    _model.psi = pyo.Var(list(map(lambda t: psi_index(*t), psi_indices)), within=pyo.Binary)
-
-    def get_constraints(idx, c):
-        i, j, k = psi_indices[idx]
-        if c == 'c1':
-            return psi(i, j, k) <= epsilon(i, j)
-        elif c == 'c2':
-            return psi(i, j, k) <= epsilon(j, k)
-        else:
-            return psi(i, j, k) >= epsilon(i, j) + epsilon(j, k) - 1
-
-    _model.xi_linearization_constraint_psi_1 = pyo.Constraint(
-        list(range(len(psi_indices))), rule=lambda _, idx: get_constraints(idx, 'c1'))
-    _model.xi_linearization_constraint_psi_2 = pyo.Constraint(
-        list(range(len(psi_indices))), rule=lambda _, idx: get_constraints(idx, 'c2'))
-    _model.xi_linearization_constraint_psi_3 = pyo.Constraint(
-        list(range(len(psi_indices))), rule=lambda _, idx: get_constraints(idx, 'c3'))
-
-def _set_variables():
-    _model.rho = pyo.Var(list(map(lambda t: rho_index(*t), cart([V, Pi]))), within=pyo.Binary)
-    _model.epsilon = pyo.Var(list(map(lambda t: epsilon_index(*t), E)), within=pyo.Binary)
-    _model.kappa = pyo.Var(list(map(kappa_index, ['neg', 'pos'])), within=pyo.PositiveReals)
-    _set_linearization_variables_xi()
-    _set_linearization_variables_psi()
-
-def _set_objective():
-    z = sum(map(lambda idx: omega(*idx) * epsilon(*idx), E)) + (K - kappa('neg') - kappa('pos')) * lamb
-    _model.z = pyo.Objective(expr=z, sense=pyo.minimize)
-
-def _set_constraint1():
-    def lhs(i):
-        return sum(map(lambda pi: rho(i, pi), Pi))
-    _model.vertex_represents_unique_partition = pyo.Constraint(V, rule=lambda _, i: lhs(i) <= 1)
-
-def _set_constraint2():
-    def lhs(pi):
-        return sum(map(lambda i: rho(i, pi), V))
-    _model.partition_has_unique_representant = pyo.Constraint(Pi, rule=lambda _, pi: lhs(pi) <= 1)
-
-def _set_constraint3():
-    def lhs():
-        res = 0
-        for pi in Pi:
-            for i in V:
-                res += rho(i, pi)
-        return res
-
-    _model.relaxation_total_components = pyo.Constraint(
-        rule=lambda _: lhs() + kappa('neg') - kappa('pos') == 0)
-
-def _set_constraint4():
-    _model.max_kappa = pyo.Constraint(
-        rule=lambda _: kappa('neg') + kappa('pos') <= K)
-
-def _set_constraint5():
-    def lhs(i):
-        return 1 - sum(rho(i, pi) for pi in Pi)
-    
-    def rhs(i):
-        return sum(xi(*arg) for arg in cart([[i], n(i), Pi], ravel=True))
-    
-    _model.representants_and_non_representants_relationship = pyo.Constraint(V, rule=lambda _, i: lhs(i) == rhs(i))
-
-def _set_constraint6():
-    def lhs(idx):
-        i, j = E[idx]
-        res = (len(n(i)) + len(n(j))) * (1 - epsilon(i, j))
-        for k in intersection([n(i), n(j)]):
-            res += epsilon(i, k) + epsilon(j, k)
-        return res
-    
-    def rhs(idx):
-        i, j = E[idx]
-
-        res = 0
-        for k in n(i):
-            res += epsilon(i, k)
-        
-        for k in n(j):
-            res += epsilon(j, k)
-
-        res -= 2
-        return res
-
-    indices = range(len(E))
-    _model.strongly_connected_components = pyo.Constraint(indices, rule=lambda _, idx: lhs(idx) >= rhs(idx))
-
-def _create_model():
-    global _model
-    
-    _model = pyo.ConcreteModel()
-
-    _set_variables()
-    _set_objective()
-    _set_constraint1()
-    _set_constraint2()
-    _set_constraint3()
-    _set_constraint4()
-    _set_constraint5()
-    _set_constraint6()
-
-    _model.write('lp.lp', io_options={'symbolic_solver_labels': True})
-#endregion model creation
-
-def initialize(graph, K, lp_file_path=None):
-    global _model
-
-    _set_model_constants(graph, K)
-    _set_model_sets(graph, K)
-    _set_model_functions(graph, K)
-
-    # print(K)
-    # print(phi)
-    # print(V)
-    # print(E)
-    # print(Pi)
-    # print(n(1))
-    # print(omega(1, 4))
-
-    _create_model()
+    _MODEL = model
 
 def run():
     solver = pyo.SolverFactory('cbc', executable='../../solvers/Cbc/bin/cbc.exe')
     solver.options['LogFile'] = 'log.log'
 
-    status = solver.solve(_model, options={"threads": 8})
-
-    for i, j in E:
-        print(i, j, epsilon(i, j)())
-
-    print()
-    for i in V:
-        for pi in Pi:
-            print(i, pi, rho(i, pi)())
+    status = solver.solve(_MODEL, options={"threads": 8})
 
     print(status)
 
-'''
+    print(f'\n\n### OBJECTIVE: {_MODEL.z()}')
+
+    print('\n### PARTITIONS SLACK')
+    for index in _MODEL.kappa:
+        print(index, _MODEL.kappa[index].value)
+
+    print('\n### PARTITIONS REPRESENTANTS')
+    for index in _MODEL.rho:
+        if _MODEL.rho[index].value != 0:
+            print(index, _MODEL.rho[index].value)
+
+    print('\n### DEACTIVATED EDGES')
+    for index in _MODEL.epsilon:
+        if _MODEL.epsilon[index].value != 1:
+            print(index, _MODEL.epsilon[index].value)

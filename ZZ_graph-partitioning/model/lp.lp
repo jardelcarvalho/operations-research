@@ -2,352 +2,973 @@
 
 min 
 z:
-+12.0 ONE_VAR_CONSTANT
-+1 epsilon(1_3)
-+1 epsilon(1_2)
-+1 epsilon(2_3)
-+2.0 epsilon(1_4)
-+1 epsilon(4_5)
--6.0 kappa(neg)
--6.0 kappa(pos)
++1 epsilon(_Edge(1__2)_)
++1 epsilon(_Edge(1__3)_)
++2 epsilon(_Edge(1__4)_)
++1 epsilon(_Edge(2__3)_)
++1 epsilon(_Edge(4__5)_)
++6 kappa(_Sign(neg)_)
++6 kappa(_Sign(pos)_)
 
 s.t.
 
-c_u_xi_linearization_constraint1(0)_:
--1 epsilon(1_2)
-+1 xi(1_2_0)
-<= 0
-
-c_u_xi_linearization_constraint1(1)_:
--1 epsilon(1_2)
-+1 xi(1_2_1)
-<= 0
-
-c_u_xi_linearization_constraint1(2)_:
--1 epsilon(1_3)
-+1 xi(1_3_0)
-<= 0
-
-c_u_xi_linearization_constraint1(3)_:
--1 epsilon(1_3)
-+1 xi(1_3_1)
-<= 0
-
-c_u_xi_linearization_constraint1(4)_:
--1 epsilon(1_4)
-+1 xi(1_4_0)
-<= 0
-
-c_u_xi_linearization_constraint1(5)_:
--1 epsilon(1_4)
-+1 xi(1_4_1)
-<= 0
-
-c_u_xi_linearization_constraint1(6)_:
--1 epsilon(2_3)
-+1 xi(2_3_0)
-<= 0
-
-c_u_xi_linearization_constraint1(7)_:
--1 epsilon(2_3)
-+1 xi(2_3_1)
-<= 0
-
-c_u_xi_linearization_constraint1(8)_:
--1 epsilon(4_5)
-+1 xi(4_5_0)
-<= 0
-
-c_u_xi_linearization_constraint1(9)_:
--1 epsilon(4_5)
-+1 xi(4_5_1)
-<= 0
-
-c_u_xi_linearization_constraint2(0)_:
-+1 xi(1_2_0)
--1 rho(2_0)
-<= 0
-
-c_u_xi_linearization_constraint2(1)_:
-+1 xi(1_2_1)
--1 rho(2_1)
-<= 0
-
-c_u_xi_linearization_constraint2(2)_:
-+1 xi(1_3_0)
--1 rho(3_0)
-<= 0
-
-c_u_xi_linearization_constraint2(3)_:
-+1 xi(1_3_1)
--1 rho(3_1)
-<= 0
-
-c_u_xi_linearization_constraint2(4)_:
-+1 xi(1_4_0)
--1 rho(4_0)
-<= 0
-
-c_u_xi_linearization_constraint2(5)_:
-+1 xi(1_4_1)
--1 rho(4_1)
-<= 0
-
-c_u_xi_linearization_constraint2(6)_:
-+1 xi(2_3_0)
--1 rho(3_0)
-<= 0
-
-c_u_xi_linearization_constraint2(7)_:
-+1 xi(2_3_1)
--1 rho(3_1)
-<= 0
-
-c_u_xi_linearization_constraint2(8)_:
-+1 xi(4_5_0)
--1 rho(5_0)
-<= 0
-
-c_u_xi_linearization_constraint2(9)_:
-+1 xi(4_5_1)
--1 rho(5_1)
-<= 0
-
-c_u_xi_linearization_constraint3(0)_:
-+1 epsilon(1_2)
--1 xi(1_2_0)
-+1 rho(2_0)
+c_u_node_can_represent_unique_partition(_Node(1)_)_:
++1 rho(_Node(1)_Partition(1)_)
++1 rho(_Node(1)_Partition(2)_)
 <= 1
 
-c_u_xi_linearization_constraint3(1)_:
-+1 epsilon(1_2)
--1 xi(1_2_1)
-+1 rho(2_1)
+c_u_node_can_represent_unique_partition(_Node(2)_)_:
++1 rho(_Node(2)_Partition(1)_)
++1 rho(_Node(2)_Partition(2)_)
 <= 1
 
-c_u_xi_linearization_constraint3(2)_:
-+1 epsilon(1_3)
--1 xi(1_3_0)
-+1 rho(3_0)
+c_u_node_can_represent_unique_partition(_Node(3)_)_:
++1 rho(_Node(3)_Partition(1)_)
++1 rho(_Node(3)_Partition(2)_)
 <= 1
 
-c_u_xi_linearization_constraint3(3)_:
-+1 epsilon(1_3)
--1 xi(1_3_1)
-+1 rho(3_1)
+c_u_node_can_represent_unique_partition(_Node(4)_)_:
++1 rho(_Node(4)_Partition(1)_)
++1 rho(_Node(4)_Partition(2)_)
 <= 1
 
-c_u_xi_linearization_constraint3(4)_:
-+1 epsilon(1_4)
--1 xi(1_4_0)
-+1 rho(4_0)
+c_u_node_can_represent_unique_partition(_Node(5)_)_:
++1 rho(_Node(5)_Partition(1)_)
++1 rho(_Node(5)_Partition(2)_)
 <= 1
 
-c_u_xi_linearization_constraint3(5)_:
-+1 epsilon(1_4)
--1 xi(1_4_1)
-+1 rho(4_1)
+c_u_partition_can_have_unique_representant(_Partition(1)_)_:
++1 rho(_Node(1)_Partition(1)_)
++1 rho(_Node(2)_Partition(1)_)
++1 rho(_Node(3)_Partition(1)_)
++1 rho(_Node(4)_Partition(1)_)
++1 rho(_Node(5)_Partition(1)_)
 <= 1
 
-c_u_xi_linearization_constraint3(6)_:
-+1 epsilon(2_3)
--1 xi(2_3_0)
-+1 rho(3_0)
+c_u_partition_can_have_unique_representant(_Partition(2)_)_:
++1 rho(_Node(1)_Partition(2)_)
++1 rho(_Node(2)_Partition(2)_)
++1 rho(_Node(3)_Partition(2)_)
++1 rho(_Node(4)_Partition(2)_)
++1 rho(_Node(5)_Partition(2)_)
 <= 1
 
-c_u_xi_linearization_constraint3(7)_:
-+1 epsilon(2_3)
--1 xi(2_3_1)
-+1 rho(3_1)
-<= 1
+c_e_relaxation_of_number_of_partitions(Unique)_:
++1 kappa(_Sign(neg)_)
+-1 kappa(_Sign(pos)_)
++1 rho(_Node(1)_Partition(1)_)
++1 rho(_Node(1)_Partition(2)_)
++1 rho(_Node(2)_Partition(1)_)
++1 rho(_Node(2)_Partition(2)_)
++1 rho(_Node(3)_Partition(1)_)
++1 rho(_Node(3)_Partition(2)_)
++1 rho(_Node(4)_Partition(1)_)
++1 rho(_Node(4)_Partition(2)_)
++1 rho(_Node(5)_Partition(1)_)
++1 rho(_Node(5)_Partition(2)_)
+= 2
 
-c_u_xi_linearization_constraint3(8)_:
-+1 epsilon(4_5)
--1 xi(4_5_0)
-+1 rho(5_0)
-<= 1
-
-c_u_xi_linearization_constraint3(9)_:
-+1 epsilon(4_5)
--1 xi(4_5_1)
-+1 rho(5_1)
-<= 1
-
-c_u_vertex_represents_unique_partition(1)_:
-+1 rho(1_0)
-+1 rho(1_1)
-<= 1
-
-c_u_vertex_represents_unique_partition(2)_:
-+1 rho(2_0)
-+1 rho(2_1)
-<= 1
-
-c_u_vertex_represents_unique_partition(3)_:
-+1 rho(3_0)
-+1 rho(3_1)
-<= 1
-
-c_u_vertex_represents_unique_partition(4)_:
-+1 rho(4_0)
-+1 rho(4_1)
-<= 1
-
-c_u_vertex_represents_unique_partition(5)_:
-+1 rho(5_0)
-+1 rho(5_1)
-<= 1
-
-c_u_partition_has_unique_representant(0)_:
-+1 rho(1_0)
-+1 rho(2_0)
-+1 rho(3_0)
-+1 rho(4_0)
-+1 rho(5_0)
-<= 1
-
-c_u_partition_has_unique_representant(1)_:
-+1 rho(1_1)
-+1 rho(2_1)
-+1 rho(3_1)
-+1 rho(4_1)
-+1 rho(5_1)
-<= 1
-
-c_e_relaxation_total_components_:
-+1 kappa(neg)
--1 kappa(pos)
-+1 rho(1_0)
-+1 rho(1_1)
-+1 rho(2_0)
-+1 rho(2_1)
-+1 rho(3_0)
-+1 rho(3_1)
-+1 rho(4_0)
-+1 rho(4_1)
-+1 rho(5_0)
-+1 rho(5_1)
-= 0
-
-c_u_max_kappa_:
-+1 kappa(neg)
-+1 kappa(pos)
+c_u_maximum_relaxation_of_partitions(Unique)_:
++1 kappa(_Sign(neg)_)
++1 kappa(_Sign(pos)_)
++1 rho(_Node(1)_Partition(1)_)
++1 rho(_Node(1)_Partition(2)_)
++1 rho(_Node(2)_Partition(1)_)
++1 rho(_Node(2)_Partition(2)_)
++1 rho(_Node(3)_Partition(1)_)
++1 rho(_Node(3)_Partition(2)_)
++1 rho(_Node(4)_Partition(1)_)
++1 rho(_Node(4)_Partition(2)_)
++1 rho(_Node(5)_Partition(1)_)
++1 rho(_Node(5)_Partition(2)_)
 <= 2
 
-c_e_representants_and_non_representants_relationship(1)_:
-+1 xi(1_2_0)
-+1 xi(1_2_1)
-+1 xi(1_3_0)
-+1 xi(1_3_1)
-+1 xi(1_4_0)
-+1 xi(1_4_1)
-+1 rho(1_0)
-+1 rho(1_1)
-= 1
-
-c_e_representants_and_non_representants_relationship(2)_:
-+1 xi(2_3_0)
-+1 xi(2_3_1)
-+1 rho(2_0)
-+1 rho(2_1)
-= 1
-
-c_e_representants_and_non_representants_relationship(3)_:
--1 rho(3_0)
--1 rho(3_1)
+c_e_representants_cannot_be_adjacent(_Node(1)_)_:
+-1 rho(_Node(1)_Partition(1)_)
+-1 rho(_Node(1)_Partition(2)_)
+-1 xi(_Node(1)_Node(2)_Partition(1)_)
+-1 xi(_Node(1)_Node(2)_Partition(2)_)
+-1 xi(_Node(1)_Node(3)_Partition(1)_)
+-1 xi(_Node(1)_Node(3)_Partition(2)_)
+-1 xi(_Node(1)_Node(4)_Partition(1)_)
+-1 xi(_Node(1)_Node(4)_Partition(2)_)
 = -1
 
-c_e_representants_and_non_representants_relationship(4)_:
-+1 xi(4_5_0)
-+1 xi(4_5_1)
-+1 rho(4_0)
-+1 rho(4_1)
-= 1
-
-c_e_representants_and_non_representants_relationship(5)_:
--1 rho(5_0)
--1 rho(5_1)
+c_e_representants_cannot_be_adjacent(_Node(2)_)_:
+-1 rho(_Node(2)_Partition(1)_)
+-1 rho(_Node(2)_Partition(2)_)
+-1 xi(_Node(2)_Node(1)_Partition(1)_)
+-1 xi(_Node(2)_Node(1)_Partition(2)_)
+-1 xi(_Node(2)_Node(3)_Partition(1)_)
+-1 xi(_Node(2)_Node(3)_Partition(2)_)
 = -1
 
-c_u_strongly_connected_components(0)_:
-+4 epsilon(1_3)
-+1 epsilon(1_2)
-+1 epsilon(1_4)
-<= 5
+c_e_representants_cannot_be_adjacent(_Node(3)_)_:
+-1 rho(_Node(3)_Partition(1)_)
+-1 rho(_Node(3)_Partition(2)_)
+-1 xi(_Node(3)_Node(1)_Partition(1)_)
+-1 xi(_Node(3)_Node(1)_Partition(2)_)
+-1 xi(_Node(3)_Node(2)_Partition(1)_)
+-1 xi(_Node(3)_Node(2)_Partition(2)_)
+= -1
 
-c_u_strongly_connected_components(1)_:
-+5 epsilon(1_2)
-+1 epsilon(1_4)
-<= 6
+c_e_representants_cannot_be_adjacent(_Node(4)_)_:
+-1 rho(_Node(4)_Partition(1)_)
+-1 rho(_Node(4)_Partition(2)_)
+-1 xi(_Node(4)_Node(1)_Partition(1)_)
+-1 xi(_Node(4)_Node(1)_Partition(2)_)
+-1 xi(_Node(4)_Node(5)_Partition(1)_)
+-1 xi(_Node(4)_Node(5)_Partition(2)_)
+= -1
 
-c_u_strongly_connected_components(2)_:
-+2 epsilon(2_3)
-<= 3
+c_e_representants_cannot_be_adjacent(_Node(5)_)_:
+-1 rho(_Node(5)_Partition(1)_)
+-1 rho(_Node(5)_Partition(2)_)
+-1 xi(_Node(5)_Node(4)_Partition(1)_)
+-1 xi(_Node(5)_Node(4)_Partition(2)_)
+= -1
 
-c_u_strongly_connected_components(3)_:
-+1 epsilon(1_3)
-+1 epsilon(1_2)
-+5 epsilon(1_4)
-+1 epsilon(4_5)
-<= 6
+c_e_mutal_neighborhoods(_Edge(1__3)_)_:
++2 epsilon(_Edge(1__3)_)
+-2 psi(_Node(1)_Node(3)_Node(3)_)
+-1 psi(_Node(1)_Node(3)_Node(4)_)
+= 0
 
-c_u_strongly_connected_components(4)_:
-+2 epsilon(4_5)
-<= 3
+c_e_mutal_neighborhoods(_Edge(1__2)_)_:
++2 epsilon(_Edge(1__2)_)
+-2 psi(_Node(1)_Node(2)_Node(2)_)
+-1 psi(_Node(1)_Node(2)_Node(4)_)
+= 0
+
+c_e_mutal_neighborhoods(_Edge(2__3)_)_:
++2 epsilon(_Edge(2__3)_)
+-2 psi(_Node(2)_Node(3)_Node(3)_)
+= 0
+
+c_e_mutal_neighborhoods(_Edge(1__4)_)_:
+-2 epsilon(_Edge(1__4)_)
++1 psi(_Node(1)_Node(4)_Node(2)_)
++1 psi(_Node(1)_Node(4)_Node(3)_)
++2 psi(_Node(1)_Node(4)_Node(4)_)
++1 psi(_Node(4)_Node(1)_Node(5)_)
+= 0
+
+c_e_mutal_neighborhoods(_Edge(4__5)_)_:
+-2 epsilon(_Edge(4__5)_)
++1 psi(_Node(4)_Node(5)_Node(1)_)
++2 psi(_Node(4)_Node(5)_Node(5)_)
+= 0
+
+c_e_mutual_neighborhoods_integrity_lhs(_Edge(1__3)_)_:
++1 psi(_Node(1)_Node(3)_Node(2)_)
+-1 psi(_Node(3)_Node(1)_Node(2)_)
+= 0
+
+c_e_mutual_neighborhoods_integrity_lhs(_Edge(1__2)_)_:
++1 psi(_Node(1)_Node(2)_Node(3)_)
+-1 psi(_Node(2)_Node(1)_Node(3)_)
+= 0
+
+c_e_mutual_neighborhoods_integrity_lhs(_Edge(2__3)_)_:
++1 psi(_Node(2)_Node(3)_Node(1)_)
+-1 psi(_Node(3)_Node(2)_Node(1)_)
+= 0
+
+c_e_mutual_neighborhoods_integrity_rhs(_Edge(1__3)_)_:
++1 psi(_Node(1)_Node(3)_Node(2)_)
++1 psi(_Node(1)_Node(3)_Node(4)_)
+-1 psi(_Node(3)_Node(1)_Node(2)_)
+= 0
+
+c_e_mutual_neighborhoods_integrity_rhs(_Edge(1__2)_)_:
++1 psi(_Node(1)_Node(2)_Node(3)_)
++1 psi(_Node(1)_Node(2)_Node(4)_)
+-1 psi(_Node(2)_Node(1)_Node(3)_)
+= 0
+
+c_e_mutual_neighborhoods_integrity_rhs(_Edge(2__3)_)_:
++1 psi(_Node(2)_Node(3)_Node(1)_)
+-1 psi(_Node(3)_Node(2)_Node(1)_)
+= 0
+
+c_e_mutual_neighborhoods_integrity_rhs(_Edge(1__4)_)_:
++1 psi(_Node(1)_Node(4)_Node(2)_)
++1 psi(_Node(1)_Node(4)_Node(3)_)
+-1 psi(_Node(4)_Node(1)_Node(5)_)
+= 0
+
+c_e_mutual_neighborhoods_integrity_rhs(_Edge(4__5)_)_:
++1 psi(_Node(4)_Node(5)_Node(1)_)
+= 0
+
+c_u_xi_linearization_leq1(_xi_product(1__2__1)_)_:
+-1 epsilon(_Edge(1__2)_)
++1 xi(_Node(1)_Node(2)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(1__2__2)_)_:
+-1 epsilon(_Edge(1__2)_)
++1 xi(_Node(1)_Node(2)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(1__3__1)_)_:
+-1 epsilon(_Edge(1__3)_)
++1 xi(_Node(1)_Node(3)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(1__3__2)_)_:
+-1 epsilon(_Edge(1__3)_)
++1 xi(_Node(1)_Node(3)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(1__4__1)_)_:
+-1 epsilon(_Edge(1__4)_)
++1 xi(_Node(1)_Node(4)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(1__4__2)_)_:
+-1 epsilon(_Edge(1__4)_)
++1 xi(_Node(1)_Node(4)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(2__1__1)_)_:
+-1 epsilon(_Edge(1__2)_)
++1 xi(_Node(2)_Node(1)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(2__1__2)_)_:
+-1 epsilon(_Edge(1__2)_)
++1 xi(_Node(2)_Node(1)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(2__3__1)_)_:
+-1 epsilon(_Edge(2__3)_)
++1 xi(_Node(2)_Node(3)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(2__3__2)_)_:
+-1 epsilon(_Edge(2__3)_)
++1 xi(_Node(2)_Node(3)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(3__1__1)_)_:
+-1 epsilon(_Edge(1__3)_)
++1 xi(_Node(3)_Node(1)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(3__1__2)_)_:
+-1 epsilon(_Edge(1__3)_)
++1 xi(_Node(3)_Node(1)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(3__2__1)_)_:
+-1 epsilon(_Edge(2__3)_)
++1 xi(_Node(3)_Node(2)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(3__2__2)_)_:
+-1 epsilon(_Edge(2__3)_)
++1 xi(_Node(3)_Node(2)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(4__1__1)_)_:
+-1 epsilon(_Edge(1__4)_)
++1 xi(_Node(4)_Node(1)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(4__1__2)_)_:
+-1 epsilon(_Edge(1__4)_)
++1 xi(_Node(4)_Node(1)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(4__5__1)_)_:
+-1 epsilon(_Edge(4__5)_)
++1 xi(_Node(4)_Node(5)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(4__5__2)_)_:
+-1 epsilon(_Edge(4__5)_)
++1 xi(_Node(4)_Node(5)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(5__4__1)_)_:
+-1 epsilon(_Edge(4__5)_)
++1 xi(_Node(5)_Node(4)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq1(_xi_product(5__4__2)_)_:
+-1 epsilon(_Edge(4__5)_)
++1 xi(_Node(5)_Node(4)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(1__2__1)_)_:
+-1 rho(_Node(2)_Partition(1)_)
++1 xi(_Node(1)_Node(2)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(1__2__2)_)_:
+-1 rho(_Node(2)_Partition(2)_)
++1 xi(_Node(1)_Node(2)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(1__3__1)_)_:
+-1 rho(_Node(3)_Partition(1)_)
++1 xi(_Node(1)_Node(3)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(1__3__2)_)_:
+-1 rho(_Node(3)_Partition(2)_)
++1 xi(_Node(1)_Node(3)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(1__4__1)_)_:
+-1 rho(_Node(4)_Partition(1)_)
++1 xi(_Node(1)_Node(4)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(1__4__2)_)_:
+-1 rho(_Node(4)_Partition(2)_)
++1 xi(_Node(1)_Node(4)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(2__1__1)_)_:
+-1 rho(_Node(1)_Partition(1)_)
++1 xi(_Node(2)_Node(1)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(2__1__2)_)_:
+-1 rho(_Node(1)_Partition(2)_)
++1 xi(_Node(2)_Node(1)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(2__3__1)_)_:
+-1 rho(_Node(3)_Partition(1)_)
++1 xi(_Node(2)_Node(3)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(2__3__2)_)_:
+-1 rho(_Node(3)_Partition(2)_)
++1 xi(_Node(2)_Node(3)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(3__1__1)_)_:
+-1 rho(_Node(1)_Partition(1)_)
++1 xi(_Node(3)_Node(1)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(3__1__2)_)_:
+-1 rho(_Node(1)_Partition(2)_)
++1 xi(_Node(3)_Node(1)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(3__2__1)_)_:
+-1 rho(_Node(2)_Partition(1)_)
++1 xi(_Node(3)_Node(2)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(3__2__2)_)_:
+-1 rho(_Node(2)_Partition(2)_)
++1 xi(_Node(3)_Node(2)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(4__1__1)_)_:
+-1 rho(_Node(1)_Partition(1)_)
++1 xi(_Node(4)_Node(1)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(4__1__2)_)_:
+-1 rho(_Node(1)_Partition(2)_)
++1 xi(_Node(4)_Node(1)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(4__5__1)_)_:
+-1 rho(_Node(5)_Partition(1)_)
++1 xi(_Node(4)_Node(5)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(4__5__2)_)_:
+-1 rho(_Node(5)_Partition(2)_)
++1 xi(_Node(4)_Node(5)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(5__4__1)_)_:
+-1 rho(_Node(4)_Partition(1)_)
++1 xi(_Node(5)_Node(4)_Partition(1)_)
+<= 0
+
+c_u_xi_linearization_leq2(_xi_product(5__4__2)_)_:
+-1 rho(_Node(4)_Partition(2)_)
++1 xi(_Node(5)_Node(4)_Partition(2)_)
+<= 0
+
+c_u_xi_linearization_geq(_xi_product(1__2__1)_)_:
++1 epsilon(_Edge(1__2)_)
++1 rho(_Node(2)_Partition(1)_)
+-1 xi(_Node(1)_Node(2)_Partition(1)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(1__2__2)_)_:
++1 epsilon(_Edge(1__2)_)
++1 rho(_Node(2)_Partition(2)_)
+-1 xi(_Node(1)_Node(2)_Partition(2)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(1__3__1)_)_:
++1 epsilon(_Edge(1__3)_)
++1 rho(_Node(3)_Partition(1)_)
+-1 xi(_Node(1)_Node(3)_Partition(1)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(1__3__2)_)_:
++1 epsilon(_Edge(1__3)_)
++1 rho(_Node(3)_Partition(2)_)
+-1 xi(_Node(1)_Node(3)_Partition(2)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(1__4__1)_)_:
++1 epsilon(_Edge(1__4)_)
++1 rho(_Node(4)_Partition(1)_)
+-1 xi(_Node(1)_Node(4)_Partition(1)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(1__4__2)_)_:
++1 epsilon(_Edge(1__4)_)
++1 rho(_Node(4)_Partition(2)_)
+-1 xi(_Node(1)_Node(4)_Partition(2)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(2__1__1)_)_:
++1 epsilon(_Edge(1__2)_)
++1 rho(_Node(1)_Partition(1)_)
+-1 xi(_Node(2)_Node(1)_Partition(1)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(2__1__2)_)_:
++1 epsilon(_Edge(1__2)_)
++1 rho(_Node(1)_Partition(2)_)
+-1 xi(_Node(2)_Node(1)_Partition(2)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(2__3__1)_)_:
++1 epsilon(_Edge(2__3)_)
++1 rho(_Node(3)_Partition(1)_)
+-1 xi(_Node(2)_Node(3)_Partition(1)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(2__3__2)_)_:
++1 epsilon(_Edge(2__3)_)
++1 rho(_Node(3)_Partition(2)_)
+-1 xi(_Node(2)_Node(3)_Partition(2)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(3__1__1)_)_:
++1 epsilon(_Edge(1__3)_)
++1 rho(_Node(1)_Partition(1)_)
+-1 xi(_Node(3)_Node(1)_Partition(1)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(3__1__2)_)_:
++1 epsilon(_Edge(1__3)_)
++1 rho(_Node(1)_Partition(2)_)
+-1 xi(_Node(3)_Node(1)_Partition(2)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(3__2__1)_)_:
++1 epsilon(_Edge(2__3)_)
++1 rho(_Node(2)_Partition(1)_)
+-1 xi(_Node(3)_Node(2)_Partition(1)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(3__2__2)_)_:
++1 epsilon(_Edge(2__3)_)
++1 rho(_Node(2)_Partition(2)_)
+-1 xi(_Node(3)_Node(2)_Partition(2)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(4__1__1)_)_:
++1 epsilon(_Edge(1__4)_)
++1 rho(_Node(1)_Partition(1)_)
+-1 xi(_Node(4)_Node(1)_Partition(1)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(4__1__2)_)_:
++1 epsilon(_Edge(1__4)_)
++1 rho(_Node(1)_Partition(2)_)
+-1 xi(_Node(4)_Node(1)_Partition(2)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(4__5__1)_)_:
++1 epsilon(_Edge(4__5)_)
++1 rho(_Node(5)_Partition(1)_)
+-1 xi(_Node(4)_Node(5)_Partition(1)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(4__5__2)_)_:
++1 epsilon(_Edge(4__5)_)
++1 rho(_Node(5)_Partition(2)_)
+-1 xi(_Node(4)_Node(5)_Partition(2)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(5__4__1)_)_:
++1 epsilon(_Edge(4__5)_)
++1 rho(_Node(4)_Partition(1)_)
+-1 xi(_Node(5)_Node(4)_Partition(1)_)
+<= 1
+
+c_u_xi_linearization_geq(_xi_product(5__4__2)_)_:
++1 epsilon(_Edge(4__5)_)
++1 rho(_Node(4)_Partition(2)_)
+-1 xi(_Node(5)_Node(4)_Partition(2)_)
+<= 1
+
+c_u_psi_linearization_leq1(_psi_product(1__3__2)_)_:
+-1 epsilon(_Edge(1__3)_)
++1 psi(_Node(1)_Node(3)_Node(2)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(1__3__3)_)_:
+-1 epsilon(_Edge(1__3)_)
++1 psi(_Node(1)_Node(3)_Node(3)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(1__3__4)_)_:
+-1 epsilon(_Edge(1__3)_)
++1 psi(_Node(1)_Node(3)_Node(4)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(3__1__1)_)_:
+-1 epsilon(_Edge(1__3)_)
++1 psi(_Node(1)_Node(3)_Node(3)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(3__1__2)_)_:
+-1 epsilon(_Edge(1__3)_)
++1 psi(_Node(3)_Node(1)_Node(2)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(1__2__2)_)_:
+-1 epsilon(_Edge(1__2)_)
++1 psi(_Node(1)_Node(2)_Node(2)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(1__2__3)_)_:
+-1 epsilon(_Edge(1__2)_)
++1 psi(_Node(1)_Node(2)_Node(3)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(1__2__4)_)_:
+-1 epsilon(_Edge(1__2)_)
++1 psi(_Node(1)_Node(2)_Node(4)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(2__1__1)_)_:
+-1 epsilon(_Edge(1__2)_)
++1 psi(_Node(1)_Node(2)_Node(2)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(2__1__3)_)_:
+-1 epsilon(_Edge(1__2)_)
++1 psi(_Node(2)_Node(1)_Node(3)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(2__3__1)_)_:
+-1 epsilon(_Edge(2__3)_)
++1 psi(_Node(2)_Node(3)_Node(1)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(2__3__3)_)_:
+-1 epsilon(_Edge(2__3)_)
++1 psi(_Node(2)_Node(3)_Node(3)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(3__2__1)_)_:
+-1 epsilon(_Edge(2__3)_)
++1 psi(_Node(3)_Node(2)_Node(1)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(3__2__2)_)_:
+-1 epsilon(_Edge(2__3)_)
++1 psi(_Node(2)_Node(3)_Node(3)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(1__4__2)_)_:
+-1 epsilon(_Edge(1__4)_)
++1 psi(_Node(1)_Node(4)_Node(2)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(1__4__3)_)_:
+-1 epsilon(_Edge(1__4)_)
++1 psi(_Node(1)_Node(4)_Node(3)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(1__4__4)_)_:
+-1 epsilon(_Edge(1__4)_)
++1 psi(_Node(1)_Node(4)_Node(4)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(4__1__1)_)_:
+-1 epsilon(_Edge(1__4)_)
++1 psi(_Node(1)_Node(4)_Node(4)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(4__1__5)_)_:
+-1 epsilon(_Edge(1__4)_)
++1 psi(_Node(4)_Node(1)_Node(5)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(4__5__1)_)_:
+-1 epsilon(_Edge(4__5)_)
++1 psi(_Node(4)_Node(5)_Node(1)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(4__5__5)_)_:
+-1 epsilon(_Edge(4__5)_)
++1 psi(_Node(4)_Node(5)_Node(5)_)
+<= 0
+
+c_u_psi_linearization_leq1(_psi_product(5__4__4)_)_:
+-1 epsilon(_Edge(4__5)_)
++1 psi(_Node(4)_Node(5)_Node(5)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(1__3__2)_)_:
+-1 epsilon(_Edge(1__2)_)
++1 psi(_Node(1)_Node(3)_Node(2)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(1__3__3)_)_:
+-1 epsilon(_Edge(1__3)_)
++1 psi(_Node(1)_Node(3)_Node(3)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(1__3__4)_)_:
+-1 epsilon(_Edge(1__4)_)
++1 psi(_Node(1)_Node(3)_Node(4)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(3__1__1)_)_:
+-1 epsilon(_Edge(1__3)_)
++1 psi(_Node(1)_Node(3)_Node(3)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(3__1__2)_)_:
+-1 epsilon(_Edge(2__3)_)
++1 psi(_Node(3)_Node(1)_Node(2)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(1__2__2)_)_:
+-1 epsilon(_Edge(1__2)_)
++1 psi(_Node(1)_Node(2)_Node(2)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(1__2__3)_)_:
+-1 epsilon(_Edge(1__3)_)
++1 psi(_Node(1)_Node(2)_Node(3)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(1__2__4)_)_:
+-1 epsilon(_Edge(1__4)_)
++1 psi(_Node(1)_Node(2)_Node(4)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(2__1__1)_)_:
+-1 epsilon(_Edge(1__2)_)
++1 psi(_Node(1)_Node(2)_Node(2)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(2__1__3)_)_:
+-1 epsilon(_Edge(2__3)_)
++1 psi(_Node(2)_Node(1)_Node(3)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(2__3__1)_)_:
+-1 epsilon(_Edge(1__2)_)
++1 psi(_Node(2)_Node(3)_Node(1)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(2__3__3)_)_:
+-1 epsilon(_Edge(2__3)_)
++1 psi(_Node(2)_Node(3)_Node(3)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(3__2__1)_)_:
+-1 epsilon(_Edge(1__3)_)
++1 psi(_Node(3)_Node(2)_Node(1)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(3__2__2)_)_:
+-1 epsilon(_Edge(2__3)_)
++1 psi(_Node(2)_Node(3)_Node(3)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(1__4__2)_)_:
+-1 epsilon(_Edge(1__2)_)
++1 psi(_Node(1)_Node(4)_Node(2)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(1__4__3)_)_:
+-1 epsilon(_Edge(1__3)_)
++1 psi(_Node(1)_Node(4)_Node(3)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(1__4__4)_)_:
+-1 epsilon(_Edge(1__4)_)
++1 psi(_Node(1)_Node(4)_Node(4)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(4__1__1)_)_:
+-1 epsilon(_Edge(1__4)_)
++1 psi(_Node(1)_Node(4)_Node(4)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(4__1__5)_)_:
+-1 epsilon(_Edge(4__5)_)
++1 psi(_Node(4)_Node(1)_Node(5)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(4__5__1)_)_:
+-1 epsilon(_Edge(1__4)_)
++1 psi(_Node(4)_Node(5)_Node(1)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(4__5__5)_)_:
+-1 epsilon(_Edge(4__5)_)
++1 psi(_Node(4)_Node(5)_Node(5)_)
+<= 0
+
+c_u_psi_linearization_leq2(_psi_product(5__4__4)_)_:
+-1 epsilon(_Edge(4__5)_)
++1 psi(_Node(4)_Node(5)_Node(5)_)
+<= 0
+
+c_u_psi_linearization_geq(_psi_product(1__3__2)_)_:
++1 epsilon(_Edge(1__2)_)
++1 epsilon(_Edge(1__3)_)
+-1 psi(_Node(1)_Node(3)_Node(2)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(1__3__3)_)_:
++2 epsilon(_Edge(1__3)_)
+-1 psi(_Node(1)_Node(3)_Node(3)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(1__3__4)_)_:
++1 epsilon(_Edge(1__3)_)
++1 epsilon(_Edge(1__4)_)
+-1 psi(_Node(1)_Node(3)_Node(4)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(3__1__1)_)_:
++2 epsilon(_Edge(1__3)_)
+-1 psi(_Node(1)_Node(3)_Node(3)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(3__1__2)_)_:
++1 epsilon(_Edge(1__3)_)
++1 epsilon(_Edge(2__3)_)
+-1 psi(_Node(3)_Node(1)_Node(2)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(1__2__2)_)_:
++2 epsilon(_Edge(1__2)_)
+-1 psi(_Node(1)_Node(2)_Node(2)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(1__2__3)_)_:
++1 epsilon(_Edge(1__2)_)
++1 epsilon(_Edge(1__3)_)
+-1 psi(_Node(1)_Node(2)_Node(3)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(1__2__4)_)_:
++1 epsilon(_Edge(1__2)_)
++1 epsilon(_Edge(1__4)_)
+-1 psi(_Node(1)_Node(2)_Node(4)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(2__1__1)_)_:
++2 epsilon(_Edge(1__2)_)
+-1 psi(_Node(1)_Node(2)_Node(2)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(2__1__3)_)_:
++1 epsilon(_Edge(1__2)_)
++1 epsilon(_Edge(2__3)_)
+-1 psi(_Node(2)_Node(1)_Node(3)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(2__3__1)_)_:
++1 epsilon(_Edge(1__2)_)
++1 epsilon(_Edge(2__3)_)
+-1 psi(_Node(2)_Node(3)_Node(1)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(2__3__3)_)_:
++2 epsilon(_Edge(2__3)_)
+-1 psi(_Node(2)_Node(3)_Node(3)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(3__2__1)_)_:
++1 epsilon(_Edge(1__3)_)
++1 epsilon(_Edge(2__3)_)
+-1 psi(_Node(3)_Node(2)_Node(1)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(3__2__2)_)_:
++2 epsilon(_Edge(2__3)_)
+-1 psi(_Node(2)_Node(3)_Node(3)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(1__4__2)_)_:
++1 epsilon(_Edge(1__2)_)
++1 epsilon(_Edge(1__4)_)
+-1 psi(_Node(1)_Node(4)_Node(2)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(1__4__3)_)_:
++1 epsilon(_Edge(1__3)_)
++1 epsilon(_Edge(1__4)_)
+-1 psi(_Node(1)_Node(4)_Node(3)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(1__4__4)_)_:
++2 epsilon(_Edge(1__4)_)
+-1 psi(_Node(1)_Node(4)_Node(4)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(4__1__1)_)_:
++2 epsilon(_Edge(1__4)_)
+-1 psi(_Node(1)_Node(4)_Node(4)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(4__1__5)_)_:
++1 epsilon(_Edge(1__4)_)
++1 epsilon(_Edge(4__5)_)
+-1 psi(_Node(4)_Node(1)_Node(5)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(4__5__1)_)_:
++1 epsilon(_Edge(1__4)_)
++1 epsilon(_Edge(4__5)_)
+-1 psi(_Node(4)_Node(5)_Node(1)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(4__5__5)_)_:
++2 epsilon(_Edge(4__5)_)
+-1 psi(_Node(4)_Node(5)_Node(5)_)
+<= 1
+
+c_u_psi_linearization_geq(_psi_product(5__4__4)_)_:
++2 epsilon(_Edge(4__5)_)
+-1 psi(_Node(4)_Node(5)_Node(5)_)
+<= 1
 
 bounds
-   1 <= ONE_VAR_CONSTANT <= 1
-   0 <= epsilon(1_3) <= 1
-   0 <= epsilon(1_2) <= 1
-   0 <= epsilon(2_3) <= 1
-   0 <= epsilon(1_4) <= 1
-   0 <= epsilon(4_5) <= 1
-   0 <= kappa(neg) <= +inf
-   0 <= kappa(pos) <= +inf
-   0 <= xi(1_2_0) <= 1
-   0 <= xi(1_2_1) <= 1
-   0 <= xi(1_3_0) <= 1
-   0 <= xi(1_3_1) <= 1
-   0 <= xi(1_4_0) <= 1
-   0 <= xi(1_4_1) <= 1
-   0 <= xi(2_3_0) <= 1
-   0 <= xi(2_3_1) <= 1
-   0 <= xi(4_5_0) <= 1
-   0 <= xi(4_5_1) <= 1
-   0 <= rho(1_0) <= 1
-   0 <= rho(1_1) <= 1
-   0 <= rho(2_0) <= 1
-   0 <= rho(2_1) <= 1
-   0 <= rho(3_0) <= 1
-   0 <= rho(3_1) <= 1
-   0 <= rho(4_0) <= 1
-   0 <= rho(4_1) <= 1
-   0 <= rho(5_0) <= 1
-   0 <= rho(5_1) <= 1
+   0 <= epsilon(_Edge(1__2)_) <= 1
+   0 <= epsilon(_Edge(1__3)_) <= 1
+   0 <= epsilon(_Edge(1__4)_) <= 1
+   0 <= epsilon(_Edge(2__3)_) <= 1
+   0 <= epsilon(_Edge(4__5)_) <= 1
+   0 <= kappa(_Sign(neg)_) <= +inf
+   0 <= kappa(_Sign(pos)_) <= +inf
+   0 <= rho(_Node(1)_Partition(1)_) <= 1
+   0 <= rho(_Node(1)_Partition(2)_) <= 1
+   0 <= rho(_Node(2)_Partition(1)_) <= 1
+   0 <= rho(_Node(2)_Partition(2)_) <= 1
+   0 <= rho(_Node(3)_Partition(1)_) <= 1
+   0 <= rho(_Node(3)_Partition(2)_) <= 1
+   0 <= rho(_Node(4)_Partition(1)_) <= 1
+   0 <= rho(_Node(4)_Partition(2)_) <= 1
+   0 <= rho(_Node(5)_Partition(1)_) <= 1
+   0 <= rho(_Node(5)_Partition(2)_) <= 1
+   0 <= xi(_Node(1)_Node(2)_Partition(1)_) <= 1
+   0 <= xi(_Node(1)_Node(2)_Partition(2)_) <= 1
+   0 <= xi(_Node(1)_Node(3)_Partition(1)_) <= 1
+   0 <= xi(_Node(1)_Node(3)_Partition(2)_) <= 1
+   0 <= xi(_Node(1)_Node(4)_Partition(1)_) <= 1
+   0 <= xi(_Node(1)_Node(4)_Partition(2)_) <= 1
+   0 <= xi(_Node(2)_Node(1)_Partition(1)_) <= 1
+   0 <= xi(_Node(2)_Node(1)_Partition(2)_) <= 1
+   0 <= xi(_Node(2)_Node(3)_Partition(1)_) <= 1
+   0 <= xi(_Node(2)_Node(3)_Partition(2)_) <= 1
+   0 <= xi(_Node(3)_Node(1)_Partition(1)_) <= 1
+   0 <= xi(_Node(3)_Node(1)_Partition(2)_) <= 1
+   0 <= xi(_Node(3)_Node(2)_Partition(1)_) <= 1
+   0 <= xi(_Node(3)_Node(2)_Partition(2)_) <= 1
+   0 <= xi(_Node(4)_Node(1)_Partition(1)_) <= 1
+   0 <= xi(_Node(4)_Node(1)_Partition(2)_) <= 1
+   0 <= xi(_Node(4)_Node(5)_Partition(1)_) <= 1
+   0 <= xi(_Node(4)_Node(5)_Partition(2)_) <= 1
+   0 <= xi(_Node(5)_Node(4)_Partition(1)_) <= 1
+   0 <= xi(_Node(5)_Node(4)_Partition(2)_) <= 1
+   0 <= psi(_Node(1)_Node(2)_Node(2)_) <= 1
+   0 <= psi(_Node(1)_Node(2)_Node(3)_) <= 1
+   0 <= psi(_Node(1)_Node(2)_Node(4)_) <= 1
+   0 <= psi(_Node(1)_Node(3)_Node(2)_) <= 1
+   0 <= psi(_Node(1)_Node(3)_Node(3)_) <= 1
+   0 <= psi(_Node(1)_Node(3)_Node(4)_) <= 1
+   0 <= psi(_Node(1)_Node(4)_Node(2)_) <= 1
+   0 <= psi(_Node(1)_Node(4)_Node(3)_) <= 1
+   0 <= psi(_Node(1)_Node(4)_Node(4)_) <= 1
+   0 <= psi(_Node(2)_Node(1)_Node(3)_) <= 1
+   0 <= psi(_Node(2)_Node(3)_Node(1)_) <= 1
+   0 <= psi(_Node(2)_Node(3)_Node(3)_) <= 1
+   0 <= psi(_Node(3)_Node(1)_Node(2)_) <= 1
+   0 <= psi(_Node(3)_Node(2)_Node(1)_) <= 1
+   0 <= psi(_Node(4)_Node(1)_Node(5)_) <= 1
+   0 <= psi(_Node(4)_Node(5)_Node(1)_) <= 1
+   0 <= psi(_Node(4)_Node(5)_Node(5)_) <= 1
 binary
-  epsilon(1_3)
-  epsilon(1_2)
-  epsilon(2_3)
-  epsilon(1_4)
-  epsilon(4_5)
-  xi(1_2_0)
-  xi(1_2_1)
-  xi(1_3_0)
-  xi(1_3_1)
-  xi(1_4_0)
-  xi(1_4_1)
-  xi(2_3_0)
-  xi(2_3_1)
-  xi(4_5_0)
-  xi(4_5_1)
-  rho(1_0)
-  rho(1_1)
-  rho(2_0)
-  rho(2_1)
-  rho(3_0)
-  rho(3_1)
-  rho(4_0)
-  rho(4_1)
-  rho(5_0)
-  rho(5_1)
+  epsilon(_Edge(1__2)_)
+  epsilon(_Edge(1__3)_)
+  epsilon(_Edge(1__4)_)
+  epsilon(_Edge(2__3)_)
+  epsilon(_Edge(4__5)_)
+  rho(_Node(1)_Partition(1)_)
+  rho(_Node(1)_Partition(2)_)
+  rho(_Node(2)_Partition(1)_)
+  rho(_Node(2)_Partition(2)_)
+  rho(_Node(3)_Partition(1)_)
+  rho(_Node(3)_Partition(2)_)
+  rho(_Node(4)_Partition(1)_)
+  rho(_Node(4)_Partition(2)_)
+  rho(_Node(5)_Partition(1)_)
+  rho(_Node(5)_Partition(2)_)
+  xi(_Node(1)_Node(2)_Partition(1)_)
+  xi(_Node(1)_Node(2)_Partition(2)_)
+  xi(_Node(1)_Node(3)_Partition(1)_)
+  xi(_Node(1)_Node(3)_Partition(2)_)
+  xi(_Node(1)_Node(4)_Partition(1)_)
+  xi(_Node(1)_Node(4)_Partition(2)_)
+  xi(_Node(2)_Node(1)_Partition(1)_)
+  xi(_Node(2)_Node(1)_Partition(2)_)
+  xi(_Node(2)_Node(3)_Partition(1)_)
+  xi(_Node(2)_Node(3)_Partition(2)_)
+  xi(_Node(3)_Node(1)_Partition(1)_)
+  xi(_Node(3)_Node(1)_Partition(2)_)
+  xi(_Node(3)_Node(2)_Partition(1)_)
+  xi(_Node(3)_Node(2)_Partition(2)_)
+  xi(_Node(4)_Node(1)_Partition(1)_)
+  xi(_Node(4)_Node(1)_Partition(2)_)
+  xi(_Node(4)_Node(5)_Partition(1)_)
+  xi(_Node(4)_Node(5)_Partition(2)_)
+  xi(_Node(5)_Node(4)_Partition(1)_)
+  xi(_Node(5)_Node(4)_Partition(2)_)
+  psi(_Node(1)_Node(2)_Node(2)_)
+  psi(_Node(1)_Node(2)_Node(3)_)
+  psi(_Node(1)_Node(2)_Node(4)_)
+  psi(_Node(1)_Node(3)_Node(2)_)
+  psi(_Node(1)_Node(3)_Node(3)_)
+  psi(_Node(1)_Node(3)_Node(4)_)
+  psi(_Node(1)_Node(4)_Node(2)_)
+  psi(_Node(1)_Node(4)_Node(3)_)
+  psi(_Node(1)_Node(4)_Node(4)_)
+  psi(_Node(2)_Node(1)_Node(3)_)
+  psi(_Node(2)_Node(3)_Node(1)_)
+  psi(_Node(2)_Node(3)_Node(3)_)
+  psi(_Node(3)_Node(1)_Node(2)_)
+  psi(_Node(3)_Node(2)_Node(1)_)
+  psi(_Node(4)_Node(1)_Node(5)_)
+  psi(_Node(4)_Node(5)_Node(1)_)
+  psi(_Node(4)_Node(5)_Node(5)_)
 end

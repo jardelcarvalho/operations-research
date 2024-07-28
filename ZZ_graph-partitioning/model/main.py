@@ -24,8 +24,8 @@ if __name__ == '__main__':
 
     Pi = [1, 2]
 
-    model.initialize(graph, Pi)
-
+    model.initialize(graph, Pi, './lp.lp')
+    model.run()
     # print(graph)
     # print()
     # print(graph[1, 3])

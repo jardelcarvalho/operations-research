@@ -25,7 +25,7 @@ class _VariableIndexFormating:
             #epsilon(1, 2) * epsilon(1, 2) = epsilon(2, 1) * epsilon(2, 1)
             #psi(1, 2, 2) = epsilon(1, 2) * epsilon(1, 2)
             #psi(2, 1, 1) = epsilon(2, 1) * epsilon(2, 1)
-            #So psi(1, 2, 2) = psi(2, 1, 1)
+            #psi(1, 2, 2) = psi(2, 1, 1)
             min_ = min(i, j, k)
             max_ = max(i, j, k)
             return f'Node({min_})_Node({max_})_Node({max_})'
@@ -38,9 +38,8 @@ class DecomposedModelStructure:
         for i, j, weight in DATA['graph'].edges:
             objective.add_variable('epsilon', _VariableIndexFormating.epsilon(i, j), weight)
         
-        objective.add_constant(Constants.K * Constants.lambda_)
-        objective.add_variable('kappa', _VariableIndexFormating.kappa('-'), -Constants.lambda_)
-        objective.add_variable('kappa', _VariableIndexFormating.kappa('+'), -Constants.lambda_) 
+        objective.add_variable('kappa', _VariableIndexFormating.kappa('neg'), Constants.lambda_)
+        objective.add_variable('kappa', _VariableIndexFormating.kappa('pos'), Constants.lambda_) 
 
         return objective
 
@@ -69,11 +68,10 @@ class DecomposedModelStructure:
 
         for pi in DATA['Pi']:
             for i in DATA['graph'].nodes:
-                constraint_set['Unique']['lhs'].add_variable(
-                    'rho', _VariableIndexFormating.rho(i, pi), 1)
+                constraint_set['Unique']['lhs'].add_variable('rho', _VariableIndexFormating.rho(i, pi), 1)
 
-        constraint_set['Unique']['lhs'].add_variable('kappa', _VariableIndexFormating.kappa('-'), 1)
-        constraint_set['Unique']['lhs'].add_variable('kappa', _VariableIndexFormating.kappa('+'), -1)
+        constraint_set['Unique']['lhs'].add_variable('kappa', _VariableIndexFormating.kappa('neg'), 1)
+        constraint_set['Unique']['lhs'].add_variable('kappa', _VariableIndexFormating.kappa('pos'), -1)
         constraint_set['Unique']['rhs'].add_constant(Constants.K)
 
         return constraint_set
@@ -81,9 +79,13 @@ class DecomposedModelStructure:
     def c4():
         constraint_set = ConstraintsSet('<=')
 
-        constraint_set['Unique']['lhs'].add_variable('kappa', _VariableIndexFormating.kappa('-'), 1)
-        constraint_set['Unique']['lhs'].add_variable('kappa', _VariableIndexFormating.kappa('+'), 1)
+        constraint_set['Unique']['lhs'].add_variable('kappa', _VariableIndexFormating.kappa('neg'), 1)
+        constraint_set['Unique']['lhs'].add_variable('kappa', _VariableIndexFormating.kappa('pos'), 1)
+
         constraint_set['Unique']['rhs'].add_constant(Constants.K)
+        for pi in DATA['Pi']:
+            for i in DATA['graph'].nodes:
+                constraint_set['Unique']['rhs'].add_variable('rho', _VariableIndexFormating.rho(i, pi), -1)
 
         return constraint_set
 
@@ -117,7 +119,7 @@ class DecomposedModelStructure:
             for k in DATA['graph'].neighborhoods(j):
                 constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('psi', _VariableIndexFormating.psi(j, i, k), 1)
 
-            constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('epsilon', _VariableIndexFormating.epsilon(i, j), 2)
+            constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('epsilon', _VariableIndexFormating.epsilon(i, j), -2)
 
         return constraint_set
         
