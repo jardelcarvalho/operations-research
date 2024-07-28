@@ -8,27 +8,42 @@ import expressions_decomposition
 import pyomo.environ as pyo
 import numpy as np
 
+
+def _create_variables_pyomo_model(model, all_variables_indices, within_map):
+    for name in all_variables_indices:
+        setattr(model, name, pyo.Var(all_variables_indices[name], within=within_map[name]))
+
+def _create_constraints_pyomo_model(model, decomposed_constraints):
+    pass
+
 def initialize(graph, Pi):
     data.initialize(graph, Pi)
 
     objective = DecomposedModelStructure.objective()
-    c1 = DecomposedModelStructure.c1()
-    c2 = DecomposedModelStructure.c2()
-    c3 = DecomposedModelStructure.c3()
-    c4 = DecomposedModelStructure.c4()
-    c5 = DecomposedModelStructure.c5()
-    c6 = DecomposedModelStructure.c6()
-    c7 = DecomposedModelStructure.c7()
-    c8 = DecomposedModelStructure.c8()
-    c9_leq1, c9_leq2, c9_geq = DecomposedModelStructure.c9_xi_linearization()
-    c10_leq1, c10_leq2, c10_geq = DecomposedModelStructure.c10_psi_linearization()
+    decomposed_constraints = [
+        DecomposedModelStructure.c1(),
+        DecomposedModelStructure.c2(),
+        DecomposedModelStructure.c3(),
+        DecomposedModelStructure.c4(),
+        DecomposedModelStructure.c5(),
+        DecomposedModelStructure.c6(),
+        DecomposedModelStructure.c7(),
+        DecomposedModelStructure.c8(),
+        *DecomposedModelStructure.c9_xi_linearization(),
+        *DecomposedModelStructure.c9_xi_linearization()]
+    
+    # c9_leq1, c9_leq2, c9_geq = DecomposedModelStructure.c9_xi_linearization()
+    # c10_leq1, c10_leq2, c10_geq = DecomposedModelStructure.c10_psi_linearization()
 
-    all_variables_indices = expressions_decomposition.get_grouped_variables_indices(
-        objective, [c1, c2, c3, c4, c5, c6, c7, c8, c9_leq1, c9_leq2, c9_geq, c10_leq1, c10_leq2, c10_geq])
+    all_variables_indices = expressions_decomposition.get_grouped_variables_indices(objective, decomposed_constraints)
 
     for name in all_variables_indices:
         print(f'{name}:\t', '  '.join(all_variables_indices[name]), sep='', end='\n\n')
 
+    model = pyo.ConcreteModel()
+
+    _create_variables_pyomo_model(model, all_variables_indices, {name: pyo.Binary for name in all_variables_indices})
+    _create_constraints_pyomo_model(model, decomposed_constraints)
 
 '''
 #region model constants
