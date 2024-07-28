@@ -1,1 +1,3 @@
-Implement graph partitioning model
+Move some functions from decomposition to util
+Implement graph visualization instead using images in .ipynb (this will facilitate tests at the next step)
+Tests tests tests
