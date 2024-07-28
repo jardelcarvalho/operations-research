@@ -147,3 +147,58 @@ class DecomposedModelStructure:
                 constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('psi', _VariableIndexFormating.psi(j, i, k), 1)
 
         return constraint_set
+
+    def c9_xi_linearization():
+        constraint_set_leq_epsilon = ConstraintsSet('<=')
+        constraint_set_leq_rho = ConstraintsSet('<=')
+        constraint_set_geq = ConstraintsSet('>=')
+
+        for i in DATA['graph'].nodes:
+            for j in DATA['graph'].neighborhoods(i):
+                for pi in DATA['Pi']:
+                    constraint_set_leq_epsilon[f'xi_product({i}, {j}, {pi})']['lhs'].add_variable('xi', _VariableIndexFormating.xi(i, j, pi), 1)
+                    constraint_set_leq_epsilon[f'xi_product({i}, {j}, {pi})']['rhs'].add_variable('epsilon', _VariableIndexFormating.epsilon(i, j), 1)
+
+                    constraint_set_leq_rho[f'xi_product({i}, {j}, {pi})']['lhs'].add_variable('xi', _VariableIndexFormating.xi(i, j, pi), 1)
+                    constraint_set_leq_rho[f'xi_product({i}, {j}, {pi})']['rhs'].add_variable('rho', _VariableIndexFormating.rho(j, pi), 1)
+
+                    constraint_set_geq[f'xi_product({i}, {j}, {pi})']['lhs'].add_variable('xi', _VariableIndexFormating.xi(i, j, pi), 1)
+                    constraint_set_geq[f'xi_product({i}, {j}, {pi})']['rhs'].add_variable('epsilon', _VariableIndexFormating.epsilon(i, j), 1)
+                    constraint_set_geq[f'xi_product({i}, {j}, {pi})']['rhs'].add_variable('rho', _VariableIndexFormating.rho(j, pi), 1)
+                    constraint_set_geq[f'xi_product({i}, {j}, {pi})']['rhs'].add_constant(-1)
+                
+        return constraint_set_leq_epsilon, constraint_set_leq_rho, constraint_set_geq
+
+    def c10_psi_linearization():
+        constraint_set_leq_epsilon1 = ConstraintsSet('<=')
+        constraint_set_leq_epsilon2 = ConstraintsSet('<=')
+        constraint_set_geq = ConstraintsSet('>=')
+
+        for i, j, _ in DATA['graph'].edges:
+            for k in DATA['graph'].neighborhoods(i):
+                constraint_set_leq_epsilon1[f'psi_product({i}, {j}, {k})']['lhs'].add_variable('psi', _VariableIndexFormating.psi(i, j, k), 1)
+                constraint_set_leq_epsilon1[f'psi_product({i}, {j}, {k})']['rhs'].add_variable('epsilon', _VariableIndexFormating.epsilon(i, j), 1)
+
+                constraint_set_leq_epsilon2[f'psi_product({i}, {j}, {k})']['lhs'].add_variable('psi', _VariableIndexFormating.psi(i, j, k), 1)
+                constraint_set_leq_epsilon2[f'psi_product({i}, {j}, {k})']['rhs'].add_variable('epsilon', _VariableIndexFormating.epsilon(i, k), 1)
+
+                constraint_set_geq[f'psi_product({i}, {j}, {k})']['lhs'].add_variable('psi', _VariableIndexFormating.psi(i, j, k), 1)
+                constraint_set_geq[f'psi_product({i}, {j}, {k})']['rhs'].add_variable('epsilon', _VariableIndexFormating.epsilon(i, j), 1)
+                constraint_set_geq[f'psi_product({i}, {j}, {k})']['rhs'].add_variable('epsilon', _VariableIndexFormating.epsilon(i, k), 1)
+                constraint_set_geq[f'psi_product({i}, {j}, {k})']['rhs'].add_constant(-1)
+
+            for k in DATA['graph'].neighborhoods(j):
+                constraint_set_leq_epsilon1[f'psi_product({j}, {i}, {k})']['lhs'].add_variable('psi', _VariableIndexFormating.psi(j, i, k), 1)
+                constraint_set_leq_epsilon1[f'psi_product({j}, {i}, {k})']['rhs'].add_variable('epsilon', _VariableIndexFormating.epsilon(j, i), 1)
+
+                constraint_set_leq_epsilon2[f'psi_product({j}, {i}, {k})']['lhs'].add_variable('psi', _VariableIndexFormating.psi(j, i, k), 1)
+                constraint_set_leq_epsilon2[f'psi_product({j}, {i}, {k})']['rhs'].add_variable('epsilon', _VariableIndexFormating.epsilon(j, k), 1)
+
+                constraint_set_geq[f'psi_product({j}, {i}, {k})']['lhs'].add_variable('psi', _VariableIndexFormating.psi(j, i, k), 1)
+                constraint_set_geq[f'psi_product({j}, {i}, {k})']['rhs'].add_variable('epsilon', _VariableIndexFormating.epsilon(j, i), 1)
+                constraint_set_geq[f'psi_product({j}, {i}, {k})']['rhs'].add_variable('epsilon', _VariableIndexFormating.epsilon(j, k), 1)
+                constraint_set_geq[f'psi_product({j}, {i}, {k})']['rhs'].add_constant(-1)
+
+        return constraint_set_leq_epsilon1, constraint_set_leq_epsilon2, constraint_set_geq
+
+

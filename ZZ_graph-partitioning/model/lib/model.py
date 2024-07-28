@@ -20,9 +20,11 @@ def initialize(graph, Pi):
     c6 = DecomposedModelStructure.c6()
     c7 = DecomposedModelStructure.c7()
     c8 = DecomposedModelStructure.c8()
+    c9_leq1, c9_leq2, c9_geq = DecomposedModelStructure.c9_xi_linearization()
+    c10_leq1, c10_leq2, c10_geq = DecomposedModelStructure.c10_psi_linearization()
 
     all_variables_indices = expressions_decomposition.get_grouped_variables_indices(
-        objective, [c1, c2, c3, c4, c5, c6, c7, c8])
+        objective, [c1, c2, c3, c4, c5, c6, c7, c8, c9_leq1, c9_leq2, c9_geq, c10_leq1, c10_leq2, c10_geq])
 
     for name in all_variables_indices:
         print(f'{name}:\t', '  '.join(all_variables_indices[name]), sep='', end='\n\n')
