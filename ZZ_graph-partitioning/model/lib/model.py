@@ -4,35 +4,11 @@ from lib.decomposition import DecomposedModelStructure
 import sys
 sys.path.append('../../utils')
 import expressions_decomposition
+import pyomo_utils
 
 import pyomo.environ as pyo
 import numpy as np
 
-
-def _create_variables_pyomo_model(model, all_variables_indices, within_map):
-    for name in all_variables_indices:
-        setattr(model, name, pyo.Var(all_variables_indices[name], within=within_map[name]))
-
-def _evaluate_expression(model, expression_terms):
-    variables = []
-    for name in expression_terms.variables:
-        var = getattr(model, name, None)
-        for index, coef in expression_terms.variables[name]:
-            variables.append(coef * var[index])
-    return sum(variables) + sum(expression_terms.constants)
-
-def _create_constraints_pyomo_model(model, constraints_set_list):
-    for name, constraints_set in constraints_set_list:
-        constraint = pyo.Constraint(
-            constraints_set.indices_names, 
-            rule=lambda _, index: constraints_set.operation(
-                _evaluate_expression(model, constraints_set.constraints[index]['lhs']), 
-                _evaluate_expression(model, constraints_set.constraints[index]['rhs'])))
-
-        setattr(model, name, constraint)
-
-def _create_objective_pyomo_model(model, expression_terms, sense):
-    model.z = pyo.Objective(expr=_evaluate_expression(model, expression_terms), sense=sense)
 
 _MODEL = None
 
@@ -71,9 +47,9 @@ def initialize(graph, Pi, lp_file_path=None):
     within_map = {name: pyo.Binary for name in all_variables_indices}
     within_map['kappa'] = pyo.PositiveReals
 
-    _create_variables_pyomo_model(model, all_variables_indices, within_map)
-    _create_constraints_pyomo_model(model, constraints_set_list)
-    _create_objective_pyomo_model(model, objective, pyo.minimize)
+    pyomo_utils.set_variables_pyomo_model(model, all_variables_indices, within_map)
+    pyomo_utils.set_constraints_pyomo_model(model, constraints_set_list)
+    pyomo_utils.set_objective_pyomo_model(model, objective, pyo.minimize)
 
     if lp_file_path is not None:
         model.write(lp_file_path, io_options={'symbolic_solver_labels': True})
