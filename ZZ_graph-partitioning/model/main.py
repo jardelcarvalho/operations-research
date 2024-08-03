@@ -17,7 +17,7 @@ def graph_from_dataframe(df, source_col, sink_col, weight_col):
 
 if __name__ == '__main__':
     graph = graph_from_dataframe(
-        io.load_data('test-cases/test1.csv'), 
+        io.load_data('test-cases/test5.csv'), 
         source_col='Source',
         sink_col='Sink',
         weight_col='Weight')

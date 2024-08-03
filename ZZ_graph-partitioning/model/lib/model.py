@@ -21,17 +21,17 @@ def initialize(graph, Pi, lp_file_path=None):
     c9_leq1, c9_leq2, c9_geq = DecomposedModelStructure.c9_xi_linearization()
     c10_leq1, c10_leq2, c10_geq = DecomposedModelStructure.c10_psi_linearization()
     constraints_set_list = [
-        ('node_can_represent_unique_partition', DecomposedModelStructure.c1()),
-        ('partition_can_have_unique_representant', DecomposedModelStructure.c2()),
-        ('relaxation_of_number_of_partitions', DecomposedModelStructure.c3()),
-        ('maximum_relaxation_of_partitions', DecomposedModelStructure.c4()),
-        ('representants_cannot_be_adjacent', DecomposedModelStructure.c5()),
+        # ('node_can_represent_unique_partition', DecomposedModelStructure.c1()),
+        # ('partition_can_have_unique_representant', DecomposedModelStructure.c2()),
+        # ('relaxation_of_number_of_partitions', DecomposedModelStructure.c3()),
+        # ('maximum_relaxation_of_partitions', DecomposedModelStructure.c4()),
+        # ('representants_cannot_be_adjacent', DecomposedModelStructure.c5()),
         ('mutal_neighborhoods', DecomposedModelStructure.c6()),
         ('mutual_neighborhoods_integrity_lhs', DecomposedModelStructure.c7()),
         ('mutual_neighborhoods_integrity_rhs', DecomposedModelStructure.c8()),
-        ('xi_linearization_leq1', c9_leq1),
-        ('xi_linearization_leq2', c9_leq2),
-        ('xi_linearization_geq', c9_geq),
+        # ('xi_linearization_leq1', c9_leq1),
+        # ('xi_linearization_leq2', c9_leq2),
+        # ('xi_linearization_geq', c9_geq),
         ('psi_linearization_leq1', c10_leq1),
         ('psi_linearization_leq2', c10_leq2),
         ('psi_linearization_geq', c10_geq)]
@@ -66,14 +66,14 @@ def run():
 
     print(f'\n\n### OBJECTIVE: {_MODEL.z()}')
 
-    print('\n### PARTITIONS SLACK')
-    for index in _MODEL.kappa:
-        print(index, _MODEL.kappa[index].value)
+    # print('\n### PARTITIONS SLACK')
+    # for index in _MODEL.kappa:
+    #     print(index, _MODEL.kappa[index].value)
 
-    print('\n### PARTITIONS REPRESENTANTS')
-    for index in _MODEL.rho:
-        if _MODEL.rho[index].value != 0:
-            print(index, _MODEL.rho[index].value)
+    # print('\n### PARTITIONS REPRESENTANTS')
+    # for index in _MODEL.rho:
+    #     if _MODEL.rho[index].value != 0:
+    #         print(index, _MODEL.rho[index].value)
 
     print('\n### DEACTIVATED EDGES')
     for index in _MODEL.epsilon:

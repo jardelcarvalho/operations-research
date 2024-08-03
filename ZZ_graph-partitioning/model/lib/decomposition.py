@@ -36,10 +36,16 @@ class DecomposedModelStructure:
         objective = ExpressionTerms()
 
         for i, j, weight in DATA['graph'].edges:
-            objective.add_variable('epsilon', _VariableIndexFormating.epsilon(i, j), weight)
+            objective.add_variable('epsilon', _VariableIndexFormating.epsilon(i, j), weight * (1 - .1))
+
+        for i, j, weight in DATA['graph'].edges:
+            objective.add_variable('epsilon', _VariableIndexFormating.epsilon(i, j), -weight)
+
+        for i, j, weight in DATA['graph'].edges:
+            objective.add_constant(weight)
         
-        objective.add_variable('kappa', _VariableIndexFormating.kappa('neg'), Constants.lambda_)
-        objective.add_variable('kappa', _VariableIndexFormating.kappa('pos'), Constants.lambda_) 
+        # objective.add_variable('kappa', _VariableIndexFormating.kappa('neg'), Constants.lambda_)
+        # objective.add_variable('kappa', _VariableIndexFormating.kappa('pos'), Constants.lambda_) 
 
         return objective
 
