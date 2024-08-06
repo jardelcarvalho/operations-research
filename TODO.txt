@@ -1,6 +1,7 @@
-Move some functions from decomposition to util
+Move some functions from decomposition to util (ok)
 Implement graph visualization instead using images in .ipynb (this will facilitate tests at the next step)
-Tests tests tests
+Tests tests tests (maybe more)
+Update the solver for the new mathematical model version
 
 Testing notes
 The number of partitions cannot be < than the real number of components (otherwise model will be infeasible)
