@@ -45,7 +45,7 @@ def initialize(graph, lp_file_path=None):
     _MODEL = model
 
 def run():
-    solver = pyo.SolverFactory('cbc', executable='../../solvers/Cbc/bin/cbc.exe')
+    solver = pyo.SolverFactory('cbc', executable='../../../solvers/Cbc/bin/cbc.exe')
     solver.options['LogFile'] = 'log.log'
 
     status = solver.solve(_MODEL, options={"threads": 1})
