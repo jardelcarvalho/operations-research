@@ -17,20 +17,10 @@ def graph_from_dataframe(df, source_col, sink_col, weight_col):
 
 if __name__ == '__main__':
     graph = graph_from_dataframe(
-        io.load_data('simple-tests/test2.csv'), 
+        io.load_data('simple-tests/test5.csv'), 
         source_col='Source',
         sink_col='Sink',
         weight_col='Weight')
 
-    Pi = [1, 2]
-
-    model.initialize(graph, Pi, './lp.lp')
+    model.initialize(graph, './lp.lp')
     model.run()
-    # print(graph)
-    # print()
-    # print(graph[1, 3])
-    # print(graph.nodes)
-    # print(graph.neighborhoods(1))
-    # print(graph.neighborhoods(4))
-    # print(graph.degree(1))
-    # lp_model.run()
