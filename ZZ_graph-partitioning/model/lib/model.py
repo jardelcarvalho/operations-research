@@ -60,7 +60,7 @@ def run():
     solver = pyo.SolverFactory('cbc', executable='../../solvers/Cbc/bin/cbc.exe')
     solver.options['LogFile'] = 'log.log'
 
-    status = solver.solve(_MODEL, options={"threads": 8})
+    status = solver.solve(_MODEL, options={"threads": 1})
 
     print(status)
 
@@ -76,6 +76,10 @@ def run():
     #         print(index, _MODEL.rho[index].value)
 
     print('\n### DEACTIVATED EDGES')
+    count = 0
     for index in _MODEL.epsilon:
         if _MODEL.epsilon[index].value != 1:
             print(index, _MODEL.epsilon[index].value)
+            count += 1
+
+    print('\nTotal:', count)
