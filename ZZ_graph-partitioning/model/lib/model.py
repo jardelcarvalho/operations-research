@@ -1,14 +1,18 @@
 from lib import data
-from lib.decomposition import DecomposedModelStructure
+from lib.decomposition import VariableIndexFormating, DecomposedModelStructure
 
 import sys
-sys.path.append('../../utils')
+import os
+
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../utils'))
+
 import expressions_decomposition
 import pyomo_utils
 
 import pyomo.environ as pyo
 import numpy as np
 
+_SOLVER_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../solvers/Cbc/bin/cbc.exe')
 
 _MODEL = None
 
@@ -33,7 +37,6 @@ def initialize(graph, lp_file_path=None):
     model = pyo.ConcreteModel()
 
     within_map = {name: pyo.Binary for name in all_variables_indices}
-    within_map['kappa'] = pyo.PositiveReals
 
     pyomo_utils.set_variables_pyomo_model(model, all_variables_indices, within_map)
     pyomo_utils.set_constraints_pyomo_model(model, constraints_set_list)
@@ -45,7 +48,7 @@ def initialize(graph, lp_file_path=None):
     _MODEL = model
 
 def run():
-    solver = pyo.SolverFactory('cbc', executable='../../../solvers/Cbc/bin/cbc.exe')
+    solver = pyo.SolverFactory('cbc', executable=_SOLVER_PATH)
     solver.options['LogFile'] = 'log.log'
 
     status = solver.solve(_MODEL, options={"threads": 1})
@@ -54,11 +57,19 @@ def run():
 
     print(f'\n\n### OBJECTIVE: {_MODEL.z()}')
 
+    active_edges = []
+
     print('\n### DEACTIVATED EDGES')
     count = 0
-    for index in _MODEL.x:
+    for i, j, w in data.DATA['graph'].edges:
+        index = VariableIndexFormating.x(i, j)
         if _MODEL.x[index].value != 1:
             print(index, _MODEL.x[index].value)
             count += 1
+        else:
+            active_edges.append((i, j, w))
 
-    print('\nTotal:', count)
+    print('\nTotal deactivated edges:', count)
+
+    return active_edges
+

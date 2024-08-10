@@ -1,11 +1,11 @@
-from lib.data import Constants, DATA
+from lib.data import DATA
 
 import sys
 sys.path.append('../../utils')
 import set_operations
 from expressions_decomposition import ExpressionTerms, ConstraintsSet
 
-class _VariableIndexFormating:
+class VariableIndexFormating:
     def x(i, j):
         if i < j:
             return f'Edge({i}, {j})'
@@ -27,10 +27,10 @@ class DecomposedModelStructure:
         objective = ExpressionTerms()
 
         for i, j, weight in DATA['graph'].edges:
-            objective.add_variable('x', _VariableIndexFormating.x(i, j), weight / 2)
+            objective.add_variable('x', VariableIndexFormating.x(i, j), weight / 2)
 
         for i, j, weight in DATA['graph'].edges:
-            objective.add_variable('x', _VariableIndexFormating.x(i, j), -weight)
+            objective.add_variable('x', VariableIndexFormating.x(i, j), -weight)
 
         for i, j, weight in DATA['graph'].edges:
             objective.add_constant(weight) 
@@ -45,16 +45,16 @@ class DecomposedModelStructure:
                 DATA['graph'].neighborhoods(i), DATA['graph'].neighborhoods(j)])
             
             for k in intersection:
-                constraint_set[f'Edge({i}, {j})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(i, j, k), 1)
-                constraint_set[f'Edge({i}, {j})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(j, i, k), 1)
+                constraint_set[f'Edge({i}, {j})']['lhs'].add_variable('rho', VariableIndexFormating.rho(i, j, k), 1)
+                constraint_set[f'Edge({i}, {j})']['lhs'].add_variable('rho', VariableIndexFormating.rho(j, i, k), 1)
 
             for k in DATA['graph'].neighborhoods(i):
-                constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('rho', _VariableIndexFormating.rho(i, j, k), 1)
+                constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('rho', VariableIndexFormating.rho(i, j, k), 1)
 
             for k in DATA['graph'].neighborhoods(j):
-                constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('rho', _VariableIndexFormating.rho(j, i, k), 1)
+                constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('rho', VariableIndexFormating.rho(j, i, k), 1)
 
-            constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('x', _VariableIndexFormating.x(i, j), -2)
+            constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('x', VariableIndexFormating.x(i, j), -2)
 
         return constraint_set
         
@@ -66,10 +66,10 @@ class DecomposedModelStructure:
                 DATA['graph'].neighborhoods(i), DATA['graph'].neighborhoods(j)])
 
             for k in intersection:
-                constraint_set[f'Edge({i}, {j})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(i, j, k), 1)
+                constraint_set[f'Edge({i}, {j})']['lhs'].add_variable('rho', VariableIndexFormating.rho(i, j, k), 1)
 
             for k in intersection:
-                constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('rho', _VariableIndexFormating.rho(j, i, k), 1)
+                constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('rho', VariableIndexFormating.rho(j, i, k), 1)
 
         return constraint_set
 
@@ -78,10 +78,10 @@ class DecomposedModelStructure:
 
         for i, j, _ in DATA['graph'].edges:
             for k in DATA['graph'].neighborhoods(i):
-                constraint_set[f'Edge({i}, {j})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(i, j, k), 1)
+                constraint_set[f'Edge({i}, {j})']['lhs'].add_variable('rho', VariableIndexFormating.rho(i, j, k), 1)
 
             for k in DATA['graph'].neighborhoods(j):
-                constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('rho', _VariableIndexFormating.rho(j, i, k), 1)
+                constraint_set[f'Edge({i}, {j})']['rhs'].add_variable('rho', VariableIndexFormating.rho(j, i, k), 1)
 
         return constraint_set
 
@@ -92,27 +92,27 @@ class DecomposedModelStructure:
 
         for i, j, _ in DATA['graph'].edges:
             for k in DATA['graph'].neighborhoods(i):
-                constraint_set_leq_x1[f'rho_product({i}, {j}, {k})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(i, j, k), 1)
-                constraint_set_leq_x1[f'rho_product({i}, {j}, {k})']['rhs'].add_variable('x', _VariableIndexFormating.x(i, j), 1)
+                constraint_set_leq_x1[f'rho_product({i}, {j}, {k})']['lhs'].add_variable('rho', VariableIndexFormating.rho(i, j, k), 1)
+                constraint_set_leq_x1[f'rho_product({i}, {j}, {k})']['rhs'].add_variable('x', VariableIndexFormating.x(i, j), 1)
 
-                constraint_set_leq_x2[f'rho_product({i}, {j}, {k})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(i, j, k), 1)
-                constraint_set_leq_x2[f'rho_product({i}, {j}, {k})']['rhs'].add_variable('x', _VariableIndexFormating.x(i, k), 1)
+                constraint_set_leq_x2[f'rho_product({i}, {j}, {k})']['lhs'].add_variable('rho', VariableIndexFormating.rho(i, j, k), 1)
+                constraint_set_leq_x2[f'rho_product({i}, {j}, {k})']['rhs'].add_variable('x', VariableIndexFormating.x(i, k), 1)
 
-                constraint_set_geq[f'rho_product({i}, {j}, {k})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(i, j, k), 1)
-                constraint_set_geq[f'rho_product({i}, {j}, {k})']['rhs'].add_variable('x', _VariableIndexFormating.x(i, j), 1)
-                constraint_set_geq[f'rho_product({i}, {j}, {k})']['rhs'].add_variable('x', _VariableIndexFormating.x(i, k), 1)
+                constraint_set_geq[f'rho_product({i}, {j}, {k})']['lhs'].add_variable('rho', VariableIndexFormating.rho(i, j, k), 1)
+                constraint_set_geq[f'rho_product({i}, {j}, {k})']['rhs'].add_variable('x', VariableIndexFormating.x(i, j), 1)
+                constraint_set_geq[f'rho_product({i}, {j}, {k})']['rhs'].add_variable('x', VariableIndexFormating.x(i, k), 1)
                 constraint_set_geq[f'rho_product({i}, {j}, {k})']['rhs'].add_constant(-1)
 
             for k in DATA['graph'].neighborhoods(j):
-                constraint_set_leq_x1[f'rho_product({j}, {i}, {k})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(j, i, k), 1)
-                constraint_set_leq_x1[f'rho_product({j}, {i}, {k})']['rhs'].add_variable('x', _VariableIndexFormating.x(j, i), 1)
+                constraint_set_leq_x1[f'rho_product({j}, {i}, {k})']['lhs'].add_variable('rho', VariableIndexFormating.rho(j, i, k), 1)
+                constraint_set_leq_x1[f'rho_product({j}, {i}, {k})']['rhs'].add_variable('x', VariableIndexFormating.x(j, i), 1)
 
-                constraint_set_leq_x2[f'rho_product({j}, {i}, {k})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(j, i, k), 1)
-                constraint_set_leq_x2[f'rho_product({j}, {i}, {k})']['rhs'].add_variable('x', _VariableIndexFormating.x(j, k), 1)
+                constraint_set_leq_x2[f'rho_product({j}, {i}, {k})']['lhs'].add_variable('rho', VariableIndexFormating.rho(j, i, k), 1)
+                constraint_set_leq_x2[f'rho_product({j}, {i}, {k})']['rhs'].add_variable('x', VariableIndexFormating.x(j, k), 1)
 
-                constraint_set_geq[f'rho_product({j}, {i}, {k})']['lhs'].add_variable('rho', _VariableIndexFormating.rho(j, i, k), 1)
-                constraint_set_geq[f'rho_product({j}, {i}, {k})']['rhs'].add_variable('x', _VariableIndexFormating.x(j, i), 1)
-                constraint_set_geq[f'rho_product({j}, {i}, {k})']['rhs'].add_variable('x', _VariableIndexFormating.x(j, k), 1)
+                constraint_set_geq[f'rho_product({j}, {i}, {k})']['lhs'].add_variable('rho', VariableIndexFormating.rho(j, i, k), 1)
+                constraint_set_geq[f'rho_product({j}, {i}, {k})']['rhs'].add_variable('x', VariableIndexFormating.x(j, i), 1)
+                constraint_set_geq[f'rho_product({j}, {i}, {k})']['rhs'].add_variable('x', VariableIndexFormating.x(j, k), 1)
                 constraint_set_geq[f'rho_product({j}, {i}, {k})']['rhs'].add_constant(-1)
 
         return constraint_set_leq_x1, constraint_set_leq_x2, constraint_set_geq
