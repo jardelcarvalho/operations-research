@@ -27,7 +27,7 @@ class DecomposedModelStructure:
         objective = ExpressionTerms()
 
         for i, j, weight in DATA['graph'].edges:
-            objective.add_variable('x', _VariableIndexFormating.x(i, j), weight * (1 - .1))
+            objective.add_variable('x', _VariableIndexFormating.x(i, j), weight / 2)
 
         for i, j, weight in DATA['graph'].edges:
             objective.add_variable('x', _VariableIndexFormating.x(i, j), -weight)
